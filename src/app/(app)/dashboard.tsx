@@ -17,9 +17,7 @@ export default function Dashboard() {
             <FlatList
                 data={POKEMONS}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item, index }) => <PokemonCard pokemon={item} index={index} />}
-                numColumns={2}
-                columnWrapperStyle={styles.row}
+                renderItem={({ item }) => <PokemonCard pokemon={item} />}
                 contentContainerStyle={styles.listContent}
                 scrollEnabled={true}
             />
@@ -34,44 +32,36 @@ export default function Dashboard() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#0D0D1F',
+        backgroundColor: '#F5F5F5',
     },
 
     header: {
         paddingHorizontal: 16,
         paddingTop: 24,
         paddingBottom: 16,
-        backgroundColor: '#12122A',
-        borderBottomWidth: 1,
-        borderBottomColor: '#1E1E3F',
+        backgroundColor: '#FFF',
     },
 
     title: {
         fontSize: 28,
         fontWeight: 'bold',
-        color: '#FFFFFF',
+        color: '#121214',
     },
 
     subtitle: {
         fontSize: 14,
-        color: '#9090C0',
+        color: '#666',
         marginTop: 4,
     },
 
-    row: {
-        paddingHorizontal: 6,
-    },
-
     listContent: {
-        paddingVertical: 10,
-        paddingBottom: 20,
+        paddingHorizontal: 16,
+        paddingVertical: 12,
     },
 
     footer: {
         paddingHorizontal: 16,
         paddingVertical: 16,
-        backgroundColor: '#12122A',
-        borderTopWidth: 1,
-        borderTopColor: '#1E1E3F',
+        backgroundColor: '#FFF',
     },
 });

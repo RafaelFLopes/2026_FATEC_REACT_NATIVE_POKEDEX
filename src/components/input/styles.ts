@@ -12,4 +12,4 @@ export const styles = StyleSheet.create({
         color: '#121214',
         backgroundColor: '#FFF',
     }
-})
+})  

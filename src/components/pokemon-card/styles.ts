@@ -1,92 +1,57 @@
 import { StyleSheet } from 'react-native';
 
-export const DARK_BG = '#0D0D1F';
-
 export const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    margin: 5,
-  },
   card: {
-    backgroundColor: DARK_BG,
-    borderRadius: 18,
-    overflow: 'hidden',
-    elevation: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
-  },
-  topSection: {
-    paddingTop: 10,
-    paddingHorizontal: 10,
-    paddingBottom: 10,
-    alignItems: 'center',
-  },
-  topRow: {
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginBottom: 6,
-  },
-  number: {
-    color: 'rgba(255,255,255,0.9)',
-    fontWeight: 'bold',
-    fontSize: 11,
-  },
-  topEmoji: {
-    fontSize: 18,
-  },
-  imageWrapper: {
     alignItems: 'center',
-    justifyContent: 'center',
-    width: 96,
-    height: 96,
+    gap: 16,
+
+    borderLeftWidth: 6,
+
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 4,
   },
-  glowRingOuter: {
-    position: 'absolute',
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    borderWidth: 3,
-  },
-  glowRingInner: {
-    position: 'absolute',
-    width: 78,
-    height: 78,
-    borderRadius: 39,
-    borderWidth: 1.5,
-  },
+
   image: {
-    width: 82,
-    height: 82,
-    zIndex: 1,
+    width: 100,
+    height: 100,
   },
-  defaultDivider: {
-    height: 4,
+
+  content: {
+    flex: 1,
+    gap: 8,
   },
-  bottomSection: {
-    backgroundColor: DARK_BG,
-    paddingHorizontal: 10,
-    paddingVertical: 12,
-    alignItems: 'center',
-    gap: 6,
-  },
+
   name: {
-    color: '#FFFFFF',
+    fontSize: 18,
     fontWeight: 'bold',
-    fontSize: 14,
-    textAlign: 'center',
+    color: '#121214',
   },
-  badge: {
+
+  typeBadge: {
+    alignSelf: 'flex-start',
     paddingHorizontal: 12,
     paddingVertical: 4,
-    borderRadius: 20,
+    borderRadius: 12,
   },
-  badgeText: {
+
+  typeText: {
     color: '#FFF',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: 'bold',
-    letterSpacing: 0.5,
+  },
+
+  description: {
+    fontSize: 13,
+    color: '#666',
+    lineHeight: 18,
   },
 });
