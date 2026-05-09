@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { router } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Button } from '@/components/button';
 import { Input } from '@/components/input';
 import { Alert } from '@/components/alert';
@@ -10,7 +10,7 @@ import { Pokeball } from '@/components/pokeball';
 import { SpinningPokeball } from '@/components/pokeball/spinning';
 import { PokemonMascot } from '@/components/pokemon-mascot';
 
-export default function Index() {
+export default function IndexWeb() {
   const [name, setName] = useState('');
   const [senha, setSenha] = useState('');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
@@ -38,17 +38,10 @@ export default function Index() {
 
   return (
     <View style={styles.container}>
-      <SpinningPokeball size={280} duration={14000} style={styles.pokeball1} />
-      <SpinningPokeball size={150} duration={9000} style={styles.pokeball2} />
-      <View style={styles.pokeball3}>
-        <Pokeball size={70} />
-      </View>
+      <SpinningPokeball size={400} duration={18000} style={styles.pokeball1} />
+      <SpinningPokeball size={200} duration={11000} style={styles.pokeball2} />
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-      >
+      <View style={styles.center}>
         <View style={styles.headerSection}>
           <Text style={styles.eyebrow}>— MUNDO POKÉMON —</Text>
           <Text style={styles.title}>POKÉDEX</Text>
@@ -85,7 +78,7 @@ export default function Index() {
 
           <Text style={styles.hint}>Usuário: rafael ou jovana  |  Senha: 1234</Text>
         </Card>
-      </ScrollView>
+      </View>
 
       <Alert
         title={alertData.title}
@@ -106,33 +99,23 @@ const styles = StyleSheet.create({
 
   pokeball1: {
     position: 'absolute',
-    top: -100,
-    right: -100,
-    opacity: 0.10,
+    top: -150,
+    right: -150,
+    opacity: 0.07,
   },
   pokeball2: {
     position: 'absolute',
-    bottom: 80,
-    left: -60,
-    opacity: 0.08,
-  },
-  pokeball3: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    opacity: 0.18,
+    bottom: -80,
+    left: -80,
+    opacity: 0.06,
   },
 
-  scroll: {
+  center: {
     flex: 1,
-  },
-  content: {
-    flexGrow: 1,
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingTop: 48,
-    paddingBottom: 40,
-    gap: 28,
+    justifyContent: 'center',
+    gap: 24,
+    paddingVertical: 48,
   },
 
   headerSection: {
@@ -161,7 +144,7 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    width: '100%',
+    width: 480,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -177,6 +160,7 @@ const styles = StyleSheet.create({
 
   loginButton: {
     backgroundColor: '#E53935',
+    width: '100%',
     marginTop: 4,
   },
   hint: {

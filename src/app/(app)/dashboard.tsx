@@ -9,7 +9,7 @@ export default function Dashboard() {
 
     return (
         <View style={styles.container}>
-            <View style={styles.header} >
+            <View style={styles.header } >
                 <Image
                     source={require('@assets/images/logo-pokemon.png')}
                     style={styles.logo}
@@ -20,7 +20,7 @@ export default function Dashboard() {
             <PokemonList data={POKEMONS} />
 
             <View style={styles.footer}>
-                <Button title="Sair" onPress={signOut} style={{ backgroundColor: '#0d588a' }} />
+                <Button title="Sair" onPress={signOut} style={{ backgroundColor: '#E53935' }} />
             </View>
         </View>
     );
@@ -29,15 +29,17 @@ export default function Dashboard() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F5F5',
+        backgroundColor: '#0D0D1F',
     },
 
     header: {
         paddingHorizontal: 16,
         paddingTop: 24,
         paddingBottom: 16,
-        backgroundColor: '#ffffff',
+        backgroundColor: '#12122A',
         alignItems: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#1E1E45',
     },
 
     logo: {
@@ -48,6 +50,8 @@ const styles = StyleSheet.create({
     footer: {
         paddingHorizontal: 16,
         paddingVertical: 16,
-        backgroundColor: '#FFF',
+        backgroundColor: '#12122A',
+        borderTopWidth: 1,
+        borderTopColor: '#1E1E45',
     },
 });

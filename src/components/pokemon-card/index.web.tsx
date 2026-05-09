@@ -1,22 +1,14 @@
-import React from 'react';
 import { View, Text, Image } from 'react-native';
-import { Pokemon, getPokemonTypeColor } from '@/constants/pokemon';
+import { getPokemonTypeColor } from '@/constants/pokemon';
 import { styles } from './styles';
+import { PokemonCardProps } from './types';
 
-interface PokemonCardProps {
-  pokemon: Pokemon;
-}
-
-export function PokemonCard({ pokemon }: PokemonCardProps) {
+export default function PokemonCardWeb({ pokemon }: PokemonCardProps) {
   const borderColor = getPokemonTypeColor(pokemon.type);
 
   return (
-    <View style={[styles.card, { borderTopColor: borderColor }]}>
-      <Image
-        source={{ uri: pokemon.image }}
-        style={styles.image}
-        resizeMode="contain"
-      />
+    <View style={[styles.card, { borderWidth: 2, borderColor: borderColor }]}>
+      <Image source={{ uri: pokemon.image }} style={styles.image} resizeMode="contain" />
 
       <View style={styles.content}>
         <Text style={styles.name}>{pokemon.name}</Text>
