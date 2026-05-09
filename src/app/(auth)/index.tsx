@@ -41,17 +41,14 @@ export default function Index() {
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
             <View style={styles.header}>
-                <Text style={styles.title}>Pokédex</Text>
-                <Text style={styles.subtitle}>Bem-vindo, Treinador!</Text>
+                <Image
+                    source={require('@assets/images/logo-pokemon.png')}
+                    style={styles.logo}
+                    resizeMode="contain"
+                />
             </View>
 
-            <Image
-                source={{
-                    uri: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png',
-                }}
-                style={styles.pokemonImage}
-                resizeMode="contain"
-            />
+            
 
             <Card style={styles.card}>
                 <Text style={styles.formTitle}>Fazer Login</Text>
@@ -109,7 +106,10 @@ const styles = StyleSheet.create({
         color: '#FFF',
         textAlign: 'center',
     },
-
+    logo: {
+        width: 180,
+        height: 60,
+    },
     subtitle: {
         fontSize: 14,
         color: 'rgba(255, 255, 255, 0.8)',

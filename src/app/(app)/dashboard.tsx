@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 import { Button } from '@/components/button';
-import { PokemonCard } from '@/components/pokemon-card';
+import { PokemonList } from '@/components/pokemon-list';
 import { POKEMONS } from '@/constants/pokemon';
 import { useAuth } from '@/context/AuthContext';
 
@@ -9,21 +9,18 @@ export default function Dashboard() {
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.title}>Pokédex</Text>
-                <Text style={styles.subtitle}>Bem-vindo, {user}!</Text>
+            <View style={styles.header} >
+                <Image
+                    source={require('@assets/images/logo-pokemon.png')}
+                    style={styles.logo}
+                    resizeMode="contain"
+                />
             </View>
 
-            <FlatList
-                data={POKEMONS}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => <PokemonCard pokemon={item} />}
-                contentContainerStyle={styles.listContent}
-                scrollEnabled={true}
-            />
+            <PokemonList data={POKEMONS} />
 
             <View style={styles.footer}>
-                <Button title="Sair" onPress={signOut} />
+                <Button title="Sair" onPress={signOut} style={{ backgroundColor: '#0d588a' }} />
             </View>
         </View>
     );
@@ -39,24 +36,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingTop: 24,
         paddingBottom: 16,
-        backgroundColor: '#FFF',
+        backgroundColor: '#ffffff',
+        alignItems: 'center',
     },
 
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#121214',
-    },
-
-    subtitle: {
-        fontSize: 14,
-        color: '#666',
-        marginTop: 4,
-    },
-
-    listContent: {
-        paddingHorizontal: 16,
-        paddingVertical: 12,
+    logo: {
+        width: 180,
+        height: 60,
     },
 
     footer: {

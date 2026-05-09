@@ -2,16 +2,16 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   card: {
+    flex: 1,
     backgroundColor: '#FFF',
     borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
+    padding: 12,
+    margin: 6,
 
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
-    gap: 16,
 
-    borderLeftWidth: 6,
+    borderTopWidth: 6,
 
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -21,23 +21,25 @@ export const styles = StyleSheet.create({
   },
 
   image: {
-    width: 100,
-    height: 100,
+    width: 90,
+    height: 90,
   },
 
   content: {
-    flex: 1,
-    gap: 8,
+    width: '100%',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 8,
   },
 
   name: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: 'bold',
     color: '#121214',
+    textAlign: 'center',
   },
 
   typeBadge: {
-    alignSelf: 'flex-start',
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
@@ -50,8 +52,9 @@ export const styles = StyleSheet.create({
   },
 
   description: {
-    fontSize: 13,
+    fontSize: 12,
     color: '#666',
-    lineHeight: 18,
+    lineHeight: 16,
+    textAlign: 'center',
   },
 });

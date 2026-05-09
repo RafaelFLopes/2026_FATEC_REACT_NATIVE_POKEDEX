@@ -11,7 +11,7 @@ export function PokemonCard({ pokemon }: PokemonCardProps) {
   const borderColor = getPokemonTypeColor(pokemon.type);
 
   return (
-    <View style={[styles.card, { borderLeftColor: borderColor }]}>
+    <View style={[styles.card, { borderTopColor: borderColor }]}>
       <Image
         source={{ uri: pokemon.image }}
         style={styles.image}
