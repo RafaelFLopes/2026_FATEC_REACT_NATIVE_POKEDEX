@@ -6,8 +6,8 @@ export default function PokemonListIOS({ data }: PokemonListProps) {
     return (
         <FlatList
             data={data}
-            keyExtractor={(item) => item.id}
-            numColumns={2}
+            keyExtractor={(item) => item.index}
+            numColumns={1}
             renderItem={({ item }) => <PokemonCard pokemon={item} />}
             contentContainerStyle={styles.listContent}
             style={styles.list}

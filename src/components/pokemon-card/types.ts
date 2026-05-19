@@ -1,4 +1,4 @@
-import { Pokemon } from '@/constants/pokemon';
+import { Pokemon } from '@/@types/pokemon';
 
 export interface PokemonCardProps {
   pokemon: Pokemon;

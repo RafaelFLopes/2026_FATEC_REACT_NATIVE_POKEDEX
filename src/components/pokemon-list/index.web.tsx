@@ -18,7 +18,7 @@ export default function PokemonListWeb({ data }: PokemonListProps) {
             <FlatList
                 key={numColumns}
                 data={data}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.index}
                 numColumns={numColumns}
                 renderItem={({ item }) => <PokemonCard pokemon={item} />}
                 contentContainerStyle={styles.listContent}

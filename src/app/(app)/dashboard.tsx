@@ -1,15 +1,33 @@
-import { View, Image, StyleSheet } from 'react-native';
+import { useEffect, useState } from 'react';
+import { View, Image, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import { Button } from '@/components/button';
 import { PokemonList } from '@/components/pokemon-list';
-import { POKEMONS } from '@/constants/pokemon';
+import { getPokemons } from '@/integration/pokemonIntegration';
 import { useAuth } from '@/context/AuthContext';
+import { Pokemon } from '@/@types/pokemon';
 
 export default function Dashboard() {
-    const { user, signOut } = useAuth();
+    const { signOut } = useAuth();
+    const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function loadData() {
+            try {
+                const data = await getPokemons(151);
+                setPokemons(data);
+            } catch (e) {
+                console.error('Erro ao carregar pokémons:', e);
+            } finally {
+                setLoading(false);
+            }
+        }
+        loadData();
+    }, []);
 
     return (
         <View style={styles.container}>
-            <View style={styles.header } >
+            <View style={styles.header}>
                 <Image
                     source={require('@assets/images/logo-pokemon.png')}
                     style={styles.logo}
@@ -17,7 +35,14 @@ export default function Dashboard() {
                 />
             </View>
 
-            <PokemonList data={POKEMONS} />
+            {loading ? (
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#E53935" />
+                    <Text style={styles.loadingText}>Carregando Pokédex...</Text>
+                </View>
+            ) : (
+                <PokemonList data={pokemons} />
+            )}
 
             <View style={styles.footer}>
                 <Button title="Sair" onPress={signOut} style={{ backgroundColor: '#E53935' }} />
@@ -45,6 +70,19 @@ const styles = StyleSheet.create({
     logo: {
         width: 180,
         height: 60,
+    },
+
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 16,
+    },
+
+    loadingText: {
+        color: '#9090B0',
+        fontSize: 14,
+        letterSpacing: 1,
     },
 
     footer: {
