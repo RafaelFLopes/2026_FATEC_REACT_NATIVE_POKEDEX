@@ -1,4 +1,4 @@
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { getColor } from '@/constants/colors';
 import { styles } from './styles';
 import { PokemonCardProps } from './types';
@@ -13,12 +13,14 @@ const STAT_ABBR: Record<string, string> = {
     speed: 'SPD',
 };
 
-export default function PokemonCardAndroid({ pokemon }: PokemonCardProps) {
+export default function PokemonCardAndroid({ pokemon, onPress, selected }: PokemonCardProps) {
     const colors = getColor(pokemon.tipos);
+    const borderColor = selected ? colors.accent : colors.accent + '66';
 
-    return (
-        <View style={[styles.card, { borderColor: colors.accent + '66' }]}>
+    const inner = (
+        <>
             <View style={[styles.cardWash, { backgroundColor: colors.bg }]} />
+            {selected && <View style={styles.selectedGlow} />}
 
             <View style={styles.topRow}>
                 <View style={[styles.imageWrap, {
@@ -79,6 +81,24 @@ export default function PokemonCardAndroid({ pokemon }: PokemonCardProps) {
                     ))}
                 </View>
             </View>
+        </>
+    );
+
+    if (onPress) {
+        return (
+            <TouchableOpacity
+                onPress={onPress}
+                activeOpacity={0.75}
+                style={[styles.card, { borderColor }]}
+            >
+                {inner}
+            </TouchableOpacity>
+        );
+    }
+
+    return (
+        <View style={[styles.card, { borderColor }]}>
+            {inner}
         </View>
     );
 }

@@ -1,0 +1,85 @@
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { getColor } from '@/constants/colors';
+import { TeamSlotProps } from './types';
+
+export default function TeamSlotWeb({ pokemon, onRemove }: TeamSlotProps) {
+    if (!pokemon) {
+        return (
+            <View style={[styles.slot, styles.slotEmpty]}>
+                <Text style={styles.emptyMark}>?</Text>
+            </View>
+        );
+    }
+
+    const colors = getColor(pokemon.tipos);
+
+    return (
+        <TouchableOpacity
+            onPress={onRemove}
+            activeOpacity={0.7}
+            style={[styles.slot, styles.slotFilled, { borderColor: colors.accent + '99' }]}
+        >
+            <View style={[styles.wash, { backgroundColor: colors.bg }]} />
+            <Image
+                source={{ uri: pokemon.imagem }}
+                style={styles.image}
+                resizeMode="contain"
+            />
+            <Text style={styles.name} numberOfLines={1}>
+                {pokemon.nome.toUpperCase()}
+            </Text>
+            <Text style={[styles.remove, { color: colors.accent }]}>✕</Text>
+        </TouchableOpacity>
+    );
+}
+
+const styles = StyleSheet.create({
+    slot: {
+        flex: 1,
+        borderRadius: 10,
+        borderWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 6,
+        overflow: 'hidden',
+        position: 'relative',
+        minHeight: 90,
+    },
+    slotFilled: {
+        backgroundColor: '#12122A',
+    },
+    slotEmpty: {
+        borderColor: '#1E1E45',
+        borderStyle: 'dashed',
+        backgroundColor: 'rgba(255,255,255,0.02)',
+    },
+    wash: {
+        ...StyleSheet.absoluteFillObject,
+        opacity: 0.25,
+        borderRadius: 10,
+    },
+    image: {
+        width: 52,
+        height: 52,
+    },
+    name: {
+        color: '#FFFFFF',
+        fontSize: 8,
+        fontWeight: '800',
+        letterSpacing: 0.5,
+        textAlign: 'center',
+        marginTop: 4,
+    },
+    remove: {
+        fontSize: 9,
+        fontWeight: '900',
+        marginTop: 3,
+        opacity: 0.8,
+    },
+    emptyMark: {
+        color: '#3A3A5A',
+        fontSize: 26,
+        fontWeight: '900',
+    },
+});

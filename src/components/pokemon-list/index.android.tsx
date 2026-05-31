@@ -2,13 +2,19 @@ import { FlatList, StyleSheet } from 'react-native';
 import { PokemonCard } from '@/components/pokemon-card';
 import { PokemonListProps } from './types';
 
-export default function PokemonListAndroid({ data }: PokemonListProps) {
+export default function PokemonListAndroid({ data, onPressItem, selectedIds }: PokemonListProps) {
     return (
         <FlatList
             data={data}
             keyExtractor={(item) => item.index}
             numColumns={1}
-            renderItem={({ item }) => <PokemonCard pokemon={item} />}
+            renderItem={({ item }) => (
+                <PokemonCard
+                    pokemon={item}
+                    onPress={onPressItem ? () => onPressItem(item) : undefined}
+                    selected={selectedIds?.includes(item.index)}
+                />
+            )}
             contentContainerStyle={styles.listContent}
             style={styles.list}
         />

@@ -128,4 +128,9 @@ export const styles = StyleSheet.create({
         width: isWeb ? 28 : 24,
         textAlign: 'right',
     },
+    selectedGlow: {
+        ...StyleSheet.absoluteFillObject,
+        borderRadius: 12,
+        backgroundColor: 'rgba(255,255,255,0.06)',
+    },
 });
