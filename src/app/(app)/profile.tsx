@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { View, Image, Text, StyleSheet } from 'react-native';
 import { Card } from '@/components/card';
 import { Input } from '@/components/input';
+import { Button } from '@/components/button';
 import { useAuth } from '@/context/AuthContext';
 
 export default function Profile() {
-    const { user } = useAuth();
+    const { user, signOut } = useAuth();
     const [name, setName] = useState(user ?? '');
     const [partidas] = useState('10');
     const [vitorias] = useState('6');
@@ -60,59 +61,71 @@ export default function Profile() {
                     />
                 </Card>
             </View>
+
+            <View style={styles.footer}>
+                <Button title="Sair" onPress={signOut} style={{ backgroundColor: '#E53935' }} />
+            </View>
         </View>
     );
 }
 
 export const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#0D0D1F',
-	},
+    container: {
+        flex: 1,
+        backgroundColor: '#0D0D1F',
+    },
 
-	header: {
-		paddingHorizontal: 16,
-		paddingTop: 24,
-		paddingBottom: 16,
-		backgroundColor: '#12122A',
-		alignItems: 'center',
-		borderBottomWidth: 1,
-		borderBottomColor: '#1E1E45',
-	},
+    header: {
+        paddingHorizontal: 16,
+        paddingTop: 24,
+        paddingBottom: 16,
+        backgroundColor: '#12122A',
+        alignItems: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#1E1E45',
+    },
 
-	logo: {
-		width: 160,
-		height: 48,
-	},
+    logo: {
+        width: 160,
+        height: 48,
+    },
 
-	content: {
-		flex: 1,
-		padding: 16,
-	},
+    content: {
+        flex: 1,
+        padding: 16,
+    },
 
-	card: {
-		width: '100%',
-		alignSelf: 'center',
-	},
+    card: {
+        width: '100%',
+        alignSelf: 'center',
+    },
 
-	avatarWrapper: {
-		alignItems: 'center',
-		marginBottom: 8,
-	},
+    avatarWrapper: {
+        alignItems: 'center',
+        marginBottom: 8,
+    },
 
-	avatar: {
-		width: 120,
-		height: 120,
-		borderRadius: 60,
-		borderWidth: 2,
-		borderColor: '#1E1E45',
-		backgroundColor: '#FFF',
-	},
+    avatar: {
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        borderWidth: 2,
+        borderColor: '#1E1E45',
+        backgroundColor: '#FFF',
+    },
 
-	label: {
-		color: '#9090B0',
-		fontSize: 12,
-		marginTop: 8,
-		marginBottom: 6,
-	},
+    label: {
+        color: '#9090B0',
+        fontSize: 12,
+        marginTop: 8,
+        marginBottom: 6,
+    },
+
+    footer: {
+        paddingHorizontal: 16,
+        paddingVertical: 16,
+        backgroundColor: '#12122A',
+        borderTopWidth: 1,
+        borderTopColor: '#1E1E45',
+    },
 });

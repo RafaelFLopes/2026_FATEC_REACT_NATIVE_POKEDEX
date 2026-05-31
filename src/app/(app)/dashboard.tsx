@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react';
 import { View, Image, StyleSheet, ActivityIndicator, Text } from 'react-native';
-import { Button } from '@/components/button';
 import { PokemonList } from '@/components/pokemon-list';
 import { getPokemons } from '@/integration/pokemonIntegration';
-import { useAuth } from '@/context/AuthContext';
 import { Pokemon } from '@/@types/pokemon';
 
 export default function Dashboard() {
-    const { signOut } = useAuth();
     const [pokemons, setPokemons] = useState<Pokemon[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -43,10 +40,6 @@ export default function Dashboard() {
             ) : (
                 <PokemonList data={pokemons} />
             )}
-
-            <View style={styles.footer}>
-                <Button title="Sair" onPress={signOut} style={{ backgroundColor: '#E53935' }} />
-            </View>
         </View>
     );
 }
@@ -83,13 +76,5 @@ const styles = StyleSheet.create({
         color: '#9090B0',
         fontSize: 14,
         letterSpacing: 1,
-    },
-
-    footer: {
-        paddingHorizontal: 16,
-        paddingVertical: 16,
-        backgroundColor: '#12122A',
-        borderTopWidth: 1,
-        borderTopColor: '#1E1E45',
     },
 });
