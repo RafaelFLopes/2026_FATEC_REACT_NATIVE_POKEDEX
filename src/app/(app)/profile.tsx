@@ -1,16 +1,37 @@
-import React, { useState } from 'react';
-import { View, Image, Text, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Image, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import { Card } from '@/components/card';
 import { Input } from '@/components/input';
 import { Button } from '@/components/button';
+import { StatCard } from '@/components/stat-card';
 import { useAuth } from '@/context/AuthContext';
+import { getStats } from '@/integration/authIntegration';
 
 export default function Profile() {
-    const { user, signOut } = useAuth();
+    const { user, userId, signOut } = useAuth();
     const [name, setName] = useState(user ?? '');
-    const [partidas] = useState('10');
-    const [vitorias] = useState('6');
-    const [derrotas] = useState('4');
+    const [nivel, setNivel] = useState('');
+    const [vitorias, setVitorias] = useState('');
+    const [derrotas, setDerrotas] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [editMode, setEditMode] = useState(false);
+
+    useEffect(() => {
+        async function loadStats() {
+            if (!userId) return;
+            try {
+                const data = await getStats(userId);
+                setNivel(data.level ?? '0');
+                setVitorias(data.vitorias ?? '0');
+                setDerrotas(data.derrotas ?? '0');
+            } catch (e) {
+                console.error('Erro ao carregar perfil:', e);
+            } finally {
+                setLoading(false);
+            }
+        }
+        loadStats();
+    }, [userId]);
 
     return (
         <View style={styles.container}>
@@ -22,7 +43,11 @@ export default function Profile() {
                 />
             </View>
 
-            <View style={styles.content}>
+            <ScrollView
+                style={styles.scroll}
+                contentContainerStyle={styles.content}
+                showsVerticalScrollIndicator={false}
+            >
                 <Card style={styles.card}>
                     <View style={styles.avatarWrapper}>
                         <Image
@@ -30,46 +55,61 @@ export default function Profile() {
                             style={styles.avatar}
                             resizeMode="cover"
                         />
+                        <Text style={styles.username}>{user}</Text>
                     </View>
 
-                    <Text style={styles.label}>Nome</Text>
-                    <Input
-                        placeholder="Seu nome"
-                        value={name}
-                        onChangeText={setName}
-                    />
+                    {editMode && (
+                        <>
+                            <Text style={styles.label}>Nome</Text>
+                            <Input
+                                placeholder="Seu nome"
+                                value={name}
+                                onChangeText={setName}
+                            />
+                        </>
+                    )}
 
-                    <Text style={styles.label}>Partidas</Text>
-                    <Input
-                        placeholder="0"
-                        value={partidas}
-                        editable={false}
-                    />
+                    {loading ? (
+                        <ActivityIndicator size="small" color="#E53935" style={{ marginVertical: 16 }} />
+                    ) : (
+                        <>
+                            <Text style={styles.sectionTitle}>ESTATÍSTICAS</Text>
+                            <View style={styles.statsRow}>
+                                <StatCard value={nivel} label="Nível" color="#F1C40F" />
+                                <StatCard value={vitorias} label="Vitórias" color="#2ECC71" />
+                                <StatCard value={derrotas} label="Derrotas" color="#E53935" />
+                            </View>
+                        </>
+                    )}
 
-                    <Text style={styles.label}>Vitórias</Text>
-                    <Input
-                        placeholder="0"
-                        value={vitorias}
-                        editable={false}
-                    />
-
-                    <Text style={styles.label}>Derrotas</Text>
-                    <Input
-                        placeholder="0"
-                        value={derrotas}
-                        editable={false}
-                    />
+                    <View style={styles.actionsRow}>
+                        {editMode ? (
+                            <>
+                                <View style={styles.btnWrapper}>
+                                    <Button title="SALVAR" onPress={() => setEditMode(false)} style={styles.btnSave} />
+                                </View>
+                                <View style={styles.btnWrapper}>
+                                    <Button title="CANCELAR" onPress={() => { setName(user ?? ''); setEditMode(false); }} style={styles.btnCancel} />
+                                </View>
+                            </>
+                        ) : (
+                            <>
+                                <View style={styles.btnWrapper}>
+                                    <Button title="EDITAR" onPress={() => setEditMode(true)} style={styles.btnEdit} />
+                                </View>
+                                <View style={styles.btnWrapper}>
+                                    <Button title="SAIR" onPress={signOut} style={styles.btnLogout} />
+                                </View>
+                            </>
+                        )}
+                    </View>
                 </Card>
-            </View>
-
-            <View style={styles.footer}>
-                <Button title="Sair" onPress={signOut} style={{ backgroundColor: '#E53935' }} />
-            </View>
+            </ScrollView>
         </View>
     );
 }
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#0D0D1F',
@@ -90,42 +130,77 @@ export const styles = StyleSheet.create({
         height: 48,
     },
 
-    content: {
+    scroll: {
         flex: 1,
+    },
+    content: {
         padding: 16,
+        paddingBottom: 32,
     },
 
     card: {
         width: '100%',
-        alignSelf: 'center',
     },
 
     avatarWrapper: {
         alignItems: 'center',
-        marginBottom: 8,
+        gap: 8,
     },
 
     avatar: {
-        width: 120,
-        height: 120,
-        borderRadius: 60,
+        width: 100,
+        height: 100,
+        borderRadius: 50,
         borderWidth: 2,
-        borderColor: '#1E1E45',
+        borderColor: '#E53935',
         backgroundColor: '#FFF',
+    },
+
+    username: {
+        color: '#FFFFFF',
+        fontSize: 18,
+        fontWeight: '800',
+        letterSpacing: 1,
     },
 
     label: {
         color: '#9090B0',
         fontSize: 12,
-        marginTop: 8,
-        marginBottom: 6,
+        fontWeight: '700',
+        letterSpacing: 1,
     },
 
-    footer: {
-        paddingHorizontal: 16,
-        paddingVertical: 16,
-        backgroundColor: '#12122A',
-        borderTopWidth: 1,
-        borderTopColor: '#1E1E45',
+    sectionTitle: {
+        color: '#9090B0',
+        fontSize: 10,
+        fontWeight: '800',
+        letterSpacing: 2,
+    },
+
+    statsRow: {
+        flexDirection: 'row',
+        gap: 8,
+    },
+
+    actionsRow: {
+        flexDirection: 'row',
+        gap: 8,
+        marginTop: 4,
+    },
+    btnWrapper: {
+        flex: 1,
+    },
+
+    btnEdit: {
+        backgroundColor: '#1E1E45',
+    },
+    btnLogout: {
+        backgroundColor: '#E53935',
+    },
+    btnSave: {
+        backgroundColor: '#2ECC71',
+    },
+    btnCancel: {
+        backgroundColor: '#1E1E45',
     },
 });

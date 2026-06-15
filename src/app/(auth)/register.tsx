@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { router } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Button } from '@/components/button';
 import { Input } from '@/components/input';
 import { Alert } from '@/components/alert';
@@ -10,9 +10,11 @@ import { Pokeball } from '@/components/pokeball';
 import { SpinningPokeball } from '@/components/pokeball/spinning';
 import { PokemonMascot } from '@/components/pokemon-mascot';
 
-export default function IndexWeb() {
+export default function Register() {
   const [name, setName] = useState('');
   const [senha, setSenha] = useState('');
+  const [confirmarSenha, setConfirmarSenha] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [alertData, setAlertData] = useState({
     title: '',
@@ -20,26 +22,30 @@ export default function IndexWeb() {
     type: 'success' as 'success' | 'error' | 'warning' | 'info',
   });
 
-  const [isLoading, setIsLoading] = useState(false);
-  const { signIn } = useAuth();
+  const { signUp } = useAuth();
 
-  async function handleLogin() {
-    if (!name || !senha) {
-      setAlertData({ title: 'Campos obrigatórios', message: 'Preencha usuário e senha.', type: 'warning' });
-      setIsAlertVisible(true);
+  function showAlert(title: string, message: string, type: 'success' | 'error' | 'warning' | 'info') {
+    setAlertData({ title, message, type });
+    setIsAlertVisible(true);
+  }
+
+  async function handleRegister() {
+    if (!name || !senha || !confirmarSenha) {
+      showAlert('Campos obrigatórios', 'Preencha todos os campos.', 'warning');
       return;
     }
+    if (senha !== confirmarSenha) {
+      showAlert('Senhas diferentes', 'As senhas não coincidem.', 'error');
+      return;
+    }
+
     setIsLoading(true);
     try {
-      await signIn(name, senha);
-      router.push({ pathname: '/dashboard', params: { username: name } });
+      await signUp(name, senha);
+      showAlert('Conta criada!', 'Cadastro realizado com sucesso. Faça login para continuar.', 'success');
+      setTimeout(() => router.back(), 1800);
     } catch (e: any) {
-      setAlertData({
-        title: 'Erro de Login',
-        message: e?.response?.data?.message ?? 'Credenciais inválidas. Tente novamente.',
-        type: 'error',
-      });
-      setIsAlertVisible(true);
+      showAlert('Erro no cadastro', e?.response?.data?.message ?? 'Não foi possível criar a conta.', 'error');
     } finally {
       setIsLoading(false);
     }
@@ -47,14 +53,21 @@ export default function IndexWeb() {
 
   return (
     <View style={styles.container}>
-      <SpinningPokeball size={400} duration={18000} style={styles.pokeball1} />
-      <SpinningPokeball size={200} duration={11000} style={styles.pokeball2} />
+      <SpinningPokeball size={280} duration={14000} style={styles.pokeball1} />
+      <SpinningPokeball size={150} duration={9000} style={styles.pokeball2} />
+      <View style={styles.pokeball3}>
+        <Pokeball size={70} />
+      </View>
 
-      <View style={styles.center}>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.headerSection}>
           <Text style={styles.eyebrow}>— MUNDO POKÉMON —</Text>
           <Text style={styles.title}>POKÉDEX</Text>
-          <Text style={styles.subtitle}>Bem-vindo, Treinador!</Text>
+          <Text style={styles.subtitle}>Crie sua conta, Treinador!</Text>
         </View>
 
         <PokemonMascot />
@@ -62,7 +75,7 @@ export default function IndexWeb() {
         <Card style={styles.card}>
           <View style={styles.cardHeader}>
             <Pokeball size={26} />
-            <Text style={styles.cardTitle}>Fazer Login</Text>
+            <Text style={styles.cardTitle}>Criar Conta</Text>
           </View>
 
           <Input
@@ -78,20 +91,27 @@ export default function IndexWeb() {
             onChangeText={setSenha}
             placeholderTextColor="#888"
           />
-
-          <Button
-            title={isLoading ? 'Entrando...' : '⚡  ENTRAR'}
-            onPress={handleLogin}
-            style={styles.loginButton}
+          <Input
+            placeholder="Confirmar Senha"
+            secureTextEntry
+            value={confirmarSenha}
+            onChangeText={setConfirmarSenha}
+            placeholderTextColor="#888"
           />
 
           <Button
-            title="CRIAR CONTA"
-            onPress={() => router.push('/register')}
+            title={isLoading ? 'Cadastrando...' : '⚡  CADASTRAR'}
+            onPress={handleRegister}
             style={styles.registerButton}
           />
+
+          <Button
+            title="Já tenho conta"
+            onPress={() => router.back()}
+            style={styles.backButton}
+          />
         </Card>
-      </View>
+      </ScrollView>
 
       <Alert
         title={alertData.title}
@@ -112,23 +132,33 @@ const styles = StyleSheet.create({
 
   pokeball1: {
     position: 'absolute',
-    top: -150,
-    right: -150,
-    opacity: 0.07,
+    top: -100,
+    right: -100,
+    opacity: 0.10,
   },
   pokeball2: {
     position: 'absolute',
-    bottom: -80,
-    left: -80,
-    opacity: 0.06,
+    bottom: 80,
+    left: -60,
+    opacity: 0.08,
+  },
+  pokeball3: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    opacity: 0.18,
   },
 
-  center: {
+  scroll: {
     flex: 1,
+  },
+  content: {
+    flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: 24,
-    paddingVertical: 48,
+    paddingHorizontal: 24,
+    paddingTop: 48,
+    paddingBottom: 40,
+    gap: 28,
   },
 
   headerSection: {
@@ -157,7 +187,7 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    width: 480,
+    width: '100%',
   },
   cardHeader: {
     flexDirection: 'row',
@@ -171,20 +201,12 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
 
-  loginButton: {
-    backgroundColor: '#E53935',
-    width: '100%',
-    marginTop: 4,
-  },
   registerButton: {
-    backgroundColor: '#1E1E45',
-    width: '100%',
+    backgroundColor: '#E53935',
     marginTop: 4,
   },
-  hint: {
-    fontSize: 11,
-    color: '#404060',
-    textAlign: 'center',
-    fontStyle: 'italic',
+  backButton: {
+    backgroundColor: '#1E1E45',
+    marginTop: 4,
   },
 });

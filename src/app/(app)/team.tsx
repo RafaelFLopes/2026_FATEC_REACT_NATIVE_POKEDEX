@@ -2,37 +2,82 @@ import { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { PokemonList } from '@/components/pokemon-list';
 import { TeamSlot } from '@/components/team-slot';
+import { Alert } from '@/components/alert';
 import { getPokemons } from '@/integration/pokemonIntegration';
+import { getTeam, updateTeam, addCaptured } from '@/integration/teamIntegration';
+import { useAuth } from '@/context/AuthContext';
 import { Pokemon } from '@/@types/pokemon';
 
 const MAX_TEAM = 5;
 
+function toNumericId(index: string): string {
+    return parseInt(index, 10).toString();
+}
+
 export default function Team() {
+    const { userId } = useAuth();
     const [pokemons, setPokemons] = useState<Pokemon[]>([]);
     const [team, setTeam] = useState<Pokemon[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isAlertVisible, setIsAlertVisible] = useState(false);
+    const [alertData, setAlertData] = useState({
+        title: '',
+        message: '',
+        type: 'error' as 'success' | 'error' | 'warning' | 'info',
+    });
+
+    function showAlert(title: string, message: string, type: 'success' | 'error' | 'warning' | 'info' = 'error') {
+        setAlertData({ title, message, type });
+        setIsAlertVisible(true);
+    }
 
     useEffect(() => {
         async function loadData() {
             try {
-                const data = await getPokemons(25);
-                setPokemons(data);
-                setTeam(data.slice(0, MAX_TEAM));
+                const [pokemonData, teamData] = await Promise.all([
+                    getPokemons(25),
+                    userId ? getTeam(userId) : Promise.resolve({ team: [], capture: [] }),
+                ]);
+                setPokemons(pokemonData);
+                setTeam(teamData.team.slice(0, MAX_TEAM));
             } catch (e) {
-                console.error('Erro ao carregar pokémons:', e);
+                console.error('Erro ao carregar dados:', e);
             } finally {
                 setLoading(false);
             }
         }
         loadData();
-    }, []);
+    }, [userId]);
 
-    function togglePokemon(pokemon: Pokemon) {
+    async function togglePokemon(pokemon: Pokemon) {
         const isSelected = team.some(p => p.index === pokemon.index);
+
         if (isSelected) {
-            setTeam(prev => prev.filter(p => p.index !== pokemon.index));
+            try {
+                if (userId) await updateTeam(userId, toNumericId(pokemon.index));
+                setTeam(prev => prev.filter(p => p.index !== pokemon.index));
+            } catch (e) {
+                showAlert('Erro', 'Não foi possível remover o pokémon do time.');
+            }
         } else if (team.length < MAX_TEAM) {
-            setTeam(prev => [...prev, pokemon]);
+            try {
+                if (userId) {
+                    await addCaptured(userId, toNumericId(pokemon.index));
+                    await updateTeam(userId, undefined, toNumericId(pokemon.index));
+                }
+                setTeam(prev => [...prev, pokemon]);
+            } catch (e) {
+                showAlert('Erro', 'Não foi possível adicionar o pokémon ao time.');
+            }
+        }
+    }
+
+    async function removePokemon(pokemon: Pokemon) {
+        try {
+            if (userId) await updateTeam(userId, toNumericId(pokemon.index));
+            setTeam(prev => prev.filter(p => p.index !== pokemon.index));
+        } catch (e) {
+            showAlert('Erro', 'Não foi possível remover o pokémon do time.');
         }
     }
 
@@ -49,7 +94,7 @@ export default function Team() {
                         <TeamSlot
                             key={team[i]?.index ?? `empty-${i}`}
                             pokemon={team[i]}
-                            onRemove={() => setTeam(prev => prev.filter(p => p.index !== team[i].index))}
+                            onRemove={() => team[i] && removePokemon(team[i])}
                         />
                     ))}
                 </View>
@@ -71,6 +116,14 @@ export default function Team() {
                     selectedIds={team.map(p => p.index)}
                 />
             )}
+
+            <Alert
+                title={alertData.title}
+                message={alertData.message}
+                type={alertData.type}
+                visible={isAlertVisible}
+                onClose={() => setIsAlertVisible(false)}
+            />
         </View>
     );
 }

@@ -20,19 +20,28 @@ export default function Index() {
     type: 'success' as 'success' | 'error' | 'warning' | 'info',
   });
 
+  const [isLoading, setIsLoading] = useState(false);
   const { signIn } = useAuth();
 
-  function validateCredentials() {
-    if ((name === 'rafael' || name === 'jovana') && senha === '1234') {
-      signIn(name);
+  async function handleLogin() {
+    if (!name || !senha) {
+      setAlertData({ title: 'Campos obrigatórios', message: 'Preencha usuário e senha.', type: 'warning' });
+      setIsAlertVisible(true);
+      return;
+    }
+    setIsLoading(true);
+    try {
+      await signIn(name, senha);
       router.push({ pathname: '/dashboard', params: { username: name } });
-    } else {
+    } catch (e: any) {
       setAlertData({
         title: 'Erro de Login',
-        message: 'Credenciais inválidas. Tente novamente.',
+        message: e?.response?.data?.message ?? 'Credenciais inválidas. Tente novamente.',
         type: 'error',
       });
       setIsAlertVisible(true);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -78,12 +87,16 @@ export default function Index() {
           />
 
           <Button
-            title="⚡  ENTRAR"
-            onPress={validateCredentials}
+            title={isLoading ? 'Entrando...' : '⚡  ENTRAR'}
+            onPress={handleLogin}
             style={styles.loginButton}
           />
 
-          <Text style={styles.hint}>Usuário: rafael ou jovana  |  Senha: 1234</Text>
+          <Button
+            title="CRIAR CONTA"
+            onPress={() => router.push('/register')}
+            style={styles.registerButton}
+          />
         </Card>
       </ScrollView>
 
@@ -177,6 +190,10 @@ const styles = StyleSheet.create({
 
   loginButton: {
     backgroundColor: '#E53935',
+    marginTop: 4,
+  },
+  registerButton: {
+    backgroundColor: '#1E1E45',
     marginTop: 4,
   },
   hint: {
