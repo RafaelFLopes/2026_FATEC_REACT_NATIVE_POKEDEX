@@ -133,4 +133,38 @@ export const styles = StyleSheet.create({
         borderRadius: 12,
         backgroundColor: 'rgba(255,255,255,0.06)',
     },
+    captureRow: {
+        marginTop: isWeb ? 10 : 8,
+        paddingTop: isWeb ? 9 : 7,
+        borderTopWidth: 1,
+    },
+    captureBtn: {
+        paddingVertical: isWeb ? 8 : 6,
+        paddingHorizontal: 12,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    captureBtnText: {
+        fontSize: isWeb ? 10 : 9,
+        fontWeight: '900',
+        letterSpacing: 1.5,
+        color: '#FFFFFF',
+    },
+    capturedBadge: {
+        paddingVertical: isWeb ? 8 : 6,
+        paddingHorizontal: 12,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(46,204,113,0.10)',
+        borderWidth: 1,
+        borderColor: 'rgba(46,204,113,0.28)',
+    },
+    capturedBadgeText: {
+        fontSize: isWeb ? 10 : 9,
+        fontWeight: '900',
+        letterSpacing: 1.5,
+        color: '#2ECC71',
+    },
 });

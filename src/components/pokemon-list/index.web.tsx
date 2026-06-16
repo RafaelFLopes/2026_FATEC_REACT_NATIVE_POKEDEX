@@ -9,7 +9,7 @@ function getColumns(width: number): number {
     return 4;
 }
 
-export default function PokemonListWeb({ data, onPressItem, selectedIds }: PokemonListProps) {
+export default function PokemonListWeb({ data, onPressItem, selectedIds, capturedIds, onCapture }: PokemonListProps) {
     const { width } = useWindowDimensions();
     const numColumns = getColumns(width);
 
@@ -20,13 +20,18 @@ export default function PokemonListWeb({ data, onPressItem, selectedIds }: Pokem
                 data={data}
                 keyExtractor={(item) => item.index}
                 numColumns={numColumns}
-                renderItem={({ item }) => (
-                    <PokemonCard
-                        pokemon={item}
-                        onPress={onPressItem ? () => onPressItem(item) : undefined}
-                        selected={selectedIds?.includes(item.index)}
-                    />
-                )}
+                renderItem={({ item }) => {
+                    const numericId = parseInt(item.index, 10).toString();
+                    return (
+                        <PokemonCard
+                            pokemon={item}
+                            onPress={onPressItem ? () => onPressItem(item) : undefined}
+                            selected={selectedIds?.includes(numericId)}
+                            onCapture={onCapture ? () => onCapture(item) : undefined}
+                            captured={capturedIds?.includes(numericId)}
+                        />
+                    );
+                }}
                 contentContainerStyle={styles.listContent}
                 style={styles.list}
             />

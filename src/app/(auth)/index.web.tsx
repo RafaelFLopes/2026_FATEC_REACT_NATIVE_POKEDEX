@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { router } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { View, Text, StyleSheet } from 'react-native';
@@ -21,7 +21,13 @@ export default function IndexWeb() {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn } = useAuth();
+  const { signIn, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace('/dashboard');
+    }
+  }, [isAuthenticated]);
 
   async function handleLogin() {
     if (!name || !senha) {
@@ -32,14 +38,15 @@ export default function IndexWeb() {
     setIsLoading(true);
     try {
       await signIn(name, senha);
-      router.push({ pathname: '/dashboard', params: { username: name } });
     } catch (e: any) {
-      setAlertData({
-        title: 'Erro de Login',
-        message: e?.response?.data?.message ?? 'Credenciais inválidas. Tente novamente.',
-        type: 'error',
-      });
-      setIsAlertVisible(true);
+      if (e?.response) {
+        setAlertData({
+          title: 'Erro de Login',
+          message: e?.response?.data?.message ?? 'Credenciais inválidas. Tente novamente.',
+          type: 'error',
+        });
+        setIsAlertVisible(true);
+      }
     } finally {
       setIsLoading(false);
     }

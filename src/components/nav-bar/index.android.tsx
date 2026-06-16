@@ -1,4 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Svg, Path } from 'react-native-svg';
 import { NavBarProps } from './types';
 
@@ -42,8 +43,9 @@ const TAB_CONFIG: Record<string, { label: string; Icon: React.FC<{ color: string
 };
 
 export default function NavBarAndroid({ state, navigation }: NavBarProps) {
+    const { bottom } = useSafeAreaInsets();
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { paddingBottom: bottom }]}>
             {state.routes.map((route, index) => {
                 const config = TAB_CONFIG[route.name];
                 if (!config) return null;

@@ -4,4 +4,6 @@ export interface PokemonCardProps {
   pokemon: Pokemon;
   onPress?: () => void;
   selected?: boolean;
+  onCapture?: () => void;
+  captured?: boolean;
 }

@@ -13,7 +13,7 @@ const STAT_ABBR: Record<string, string> = {
     speed: 'SPD',
 };
 
-export default function PokemonCardIOS({ pokemon, onPress, selected }: PokemonCardProps) {
+export default function PokemonCardIOS({ pokemon, onPress, selected, onCapture, captured }: PokemonCardProps) {
     const colors = getColor(pokemon.tipos);
     const borderColor = selected ? colors.accent : colors.accent + '66';
 
@@ -81,6 +81,24 @@ export default function PokemonCardIOS({ pokemon, onPress, selected }: PokemonCa
                     ))}
                 </View>
             </View>
+
+            {onCapture !== undefined && (
+                <View style={[styles.captureRow, { borderTopColor: colors.accent + '25' }]}>
+                    {captured ? (
+                        <View style={styles.capturedBadge}>
+                            <Text style={styles.capturedBadgeText}>✓ CAPTURADO</Text>
+                        </View>
+                    ) : (
+                        <TouchableOpacity
+                            onPress={onCapture}
+                            activeOpacity={0.7}
+                            style={[styles.captureBtn, { backgroundColor: colors.accent }]}
+                        >
+                            <Text style={styles.captureBtnText}>CAPTURAR</Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
+            )}
         </>
     );
 

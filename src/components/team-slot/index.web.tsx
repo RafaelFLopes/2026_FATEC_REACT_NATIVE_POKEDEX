@@ -2,7 +2,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { getColor } from '@/constants/colors';
 import { TeamSlotProps } from './types';
 
-export default function TeamSlotWeb({ pokemon, onRemove }: TeamSlotProps) {
+export default function TeamSlotWeb({ pokemon, onRemove, swapMode }: TeamSlotProps) {
     if (!pokemon) {
         return (
             <View style={[styles.slot, styles.slotEmpty]}>
@@ -12,13 +12,10 @@ export default function TeamSlotWeb({ pokemon, onRemove }: TeamSlotProps) {
     }
 
     const colors = getColor(pokemon.tipos);
+    const isSwappable = swapMode && onRemove;
 
-    return (
-        <TouchableOpacity
-            onPress={onRemove}
-            activeOpacity={0.7}
-            style={[styles.slot, styles.slotFilled, { borderColor: colors.accent + '99' }]}
-        >
+    const inner = (
+        <>
             <View style={[styles.wash, { backgroundColor: colors.bg }]} />
             <Image
                 source={{ uri: pokemon.imagem }}
@@ -28,8 +25,28 @@ export default function TeamSlotWeb({ pokemon, onRemove }: TeamSlotProps) {
             <Text style={styles.name} numberOfLines={1}>
                 {pokemon.nome.toUpperCase()}
             </Text>
-            <Text style={[styles.remove, { color: colors.accent }]}>✕</Text>
-        </TouchableOpacity>
+            {isSwappable && (
+                <Text style={[styles.remove, { color: '#E15610' }]}>⟳</Text>
+            )}
+        </>
+    );
+
+    if (isSwappable) {
+        return (
+            <TouchableOpacity
+                onPress={onRemove}
+                activeOpacity={0.7}
+                style={[styles.slot, styles.slotFilled, { borderColor: '#E15610' }]}
+            >
+                {inner}
+            </TouchableOpacity>
+        );
+    }
+
+    return (
+        <View style={[styles.slot, styles.slotFilled, { borderColor: colors.accent + '99' }]}>
+            {inner}
+        </View>
     );
 }
 

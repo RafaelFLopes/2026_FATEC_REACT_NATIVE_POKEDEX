@@ -3,6 +3,9 @@ import { Pokemon } from '../@types/pokemon';
 
 const api = axios.create({
   baseURL: 'https://lnh1dhp1mj.execute-api.us-east-1.amazonaws.com/api-pokemon',
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 interface ApiPokemon {
@@ -45,14 +48,16 @@ export async function updateTeam(
   removedPokemon?: string,
   newPokemon?: string
 ): Promise<void> {
-  const params: Record<string, string> = { 'user-id': userId };
-  if (removedPokemon) params['removed-pokemon'] = removedPokemon;
-  if (newPokemon) params['new-pokemon'] = newPokemon;
-  await api.put('/pokemon/v1/team', null, { params });
+  const body: Record<string, string> = {};
+  if (removedPokemon) body.removedPokemon = removedPokemon;
+  if (newPokemon) body.newPokemon = newPokemon;
+  await api.put('/pokemon/v1/team', body, {
+    params: { 'user-id': userId },
+  });
 }
 
 export async function addCaptured(userId: string, pokemonId: string): Promise<void> {
-  await api.put('/pokemon/v1/captured', null, {
+  await api.put('/pokemon/v1/captured', {}, {
     params: { 'user-id': userId, 'pokemon-id': pokemonId },
   });
 }

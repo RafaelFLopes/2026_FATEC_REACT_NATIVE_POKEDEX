@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { useState, useCallback } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { PokemonList } from '@/components/pokemon-list';
 import { TeamSlot } from '@/components/team-slot';
 import { Alert } from '@/components/alert';
-import { getPokemons } from '@/integration/pokemonIntegration';
-import { getTeam, updateTeam, addCaptured } from '@/integration/teamIntegration';
+import { getTeam, updateTeam } from '@/integration/teamIntegration';
 import { useAuth } from '@/context/AuthContext';
 import { Pokemon } from '@/@types/pokemon';
 
@@ -16,8 +16,9 @@ function toNumericId(index: string): string {
 
 export default function Team() {
     const { userId } = useAuth();
-    const [pokemons, setPokemons] = useState<Pokemon[]>([]);
+    const [captured, setCaptured] = useState<Pokemon[]>([]);
     const [team, setTeam] = useState<Pokemon[]>([]);
+    const [selectedCapture, setSelectedCapture] = useState<Pokemon | null>(null);
     const [loading, setLoading] = useState(true);
     const [isAlertVisible, setIsAlertVisible] = useState(false);
     const [alertData, setAlertData] = useState({
@@ -31,55 +32,77 @@ export default function Team() {
         setIsAlertVisible(true);
     }
 
-    useEffect(() => {
-        async function loadData() {
-            try {
-                const [pokemonData, teamData] = await Promise.all([
-                    getPokemons(25),
-                    userId ? getTeam(userId) : Promise.resolve({ team: [], capture: [] }),
-                ]);
-                setPokemons(pokemonData);
-                setTeam(teamData.team.slice(0, MAX_TEAM));
-            } catch (e) {
-                console.error('Erro ao carregar dados:', e);
-            } finally {
-                setLoading(false);
-            }
-        }
-        loadData();
-    }, [userId]);
-
-    async function togglePokemon(pokemon: Pokemon) {
-        const isSelected = team.some(p => p.index === pokemon.index);
-
-        if (isSelected) {
-            try {
-                if (userId) await updateTeam(userId, toNumericId(pokemon.index));
-                setTeam(prev => prev.filter(p => p.index !== pokemon.index));
-            } catch (e) {
-                showAlert('Erro', 'Não foi possível remover o pokémon do time.');
-            }
-        } else if (team.length < MAX_TEAM) {
-            try {
-                if (userId) {
-                    await addCaptured(userId, toNumericId(pokemon.index));
-                    await updateTeam(userId, undefined, toNumericId(pokemon.index));
+    useFocusEffect(
+        useCallback(() => {
+            let active = true;
+            async function loadData() {
+                setLoading(true);
+                try {
+                    const teamData = userId
+                        ? await getTeam(userId)
+                        : { team: [], capture: [] };
+                    if (active) {
+                        setTeam(teamData.team.slice(0, MAX_TEAM));
+                        setCaptured(teamData.capture);
+                    }
+                } catch (e) {
+                    console.error('Erro ao carregar time:', e);
+                } finally {
+                    if (active) setLoading(false);
                 }
+            }
+            loadData();
+            return () => { active = false; };
+        }, [userId])
+    );
+
+    async function handleCapturedPress(pokemon: Pokemon) {
+        const numericId = toNumericId(pokemon.index);
+        const isInTeam = team.some(p => toNumericId(p.index) === numericId);
+        if (isInTeam) return;
+
+        if (team.length < MAX_TEAM) {
+            // Slot vazio disponível — adiciona diretamente
+            try {
+                if (userId) await updateTeam(userId, undefined, numericId);
                 setTeam(prev => [...prev, pokemon]);
+                setCaptured(prev => prev.filter(p => toNumericId(p.index) !== numericId));
             } catch (e) {
-                showAlert('Erro', 'Não foi possível adicionar o pokémon ao time.');
+                showAlert('Erro', 'Não foi possível adicionar ao time.');
+            }
+        } else {
+            // Time cheio — seleciona para trocar
+            if (selectedCapture && toNumericId(selectedCapture.index) === numericId) {
+                setSelectedCapture(null);
+            } else {
+                setSelectedCapture(pokemon);
             }
         }
     }
 
-    async function removePokemon(pokemon: Pokemon) {
+    async function handleSlotSwap(slotPokemon: Pokemon) {
+        if (!selectedCapture || !userId) return;
+        const removeId = toNumericId(slotPokemon.index);
+        const addId = toNumericId(selectedCapture.index);
         try {
-            if (userId) await updateTeam(userId, toNumericId(pokemon.index));
-            setTeam(prev => prev.filter(p => p.index !== pokemon.index));
+            await updateTeam(userId, removeId, addId);
+            setTeam(prev => {
+                const without = prev.filter(p => toNumericId(p.index) !== removeId);
+                return [...without, selectedCapture];
+            });
+            setCaptured(prev => {
+                const withoutAdded = prev.filter(p => toNumericId(p.index) !== addId);
+                return [...withoutAdded, slotPokemon];
+            });
+            setSelectedCapture(null);
+            showAlert('Sucesso!', `${selectedCapture.nome.toUpperCase()} entrou no time!`, 'success');
         } catch (e) {
-            showAlert('Erro', 'Não foi possível remover o pokémon do time.');
+            showAlert('Erro', 'Não foi possível substituir o pokémon.');
         }
     }
+
+    const teamNumericIds = team.map(p => toNumericId(p.index));
+    const selectedId = selectedCapture ? toNumericId(selectedCapture.index) : null;
 
     return (
         <View style={styles.container}>
@@ -88,20 +111,41 @@ export default function Team() {
                 <Text style={styles.headerSub}>{team.length}/{MAX_TEAM} POKÉMONS</Text>
             </View>
 
+            {selectedCapture && (
+                <View style={styles.swapBanner}>
+                    <Text style={styles.swapBannerText} numberOfLines={1}>
+                        Substituir por{' '}
+                        <Text style={styles.swapBannerName}>
+                            {selectedCapture.nome.toUpperCase()}
+                        </Text>
+                        {' '}— clique em um slot
+                    </Text>
+                    <TouchableOpacity onPress={() => setSelectedCapture(null)} style={styles.swapCancel}>
+                        <Text style={styles.swapCancelText}>✕</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
+
             <View style={styles.teamSection}>
                 <View style={styles.slotsRow}>
-                    {Array.from({ length: MAX_TEAM }).map((_, i) => (
-                        <TeamSlot
-                            key={team[i]?.index ?? `empty-${i}`}
-                            pokemon={team[i]}
-                            onRemove={() => team[i] && removePokemon(team[i])}
-                        />
-                    ))}
+                    {Array.from({ length: MAX_TEAM }).map((_, i) => {
+                        const slotPokemon = team[i] ?? undefined;
+                        return (
+                            <TeamSlot
+                                key={slotPokemon?.index ?? `empty-${i}`}
+                                pokemon={slotPokemon}
+                                onRemove={slotPokemon && selectedCapture ? () => handleSlotSwap(slotPokemon) : undefined}
+                                swapMode={!!selectedCapture}
+                            />
+                        );
+                    })}
                 </View>
             </View>
 
             <View style={styles.sectionLabel}>
-                <Text style={styles.sectionLabelText}>ESCOLHA SEUS POKÉMONS</Text>
+                <Text style={styles.sectionLabelText}>
+                    POKÉMONS CAPTURADOS ({captured.length})
+                </Text>
             </View>
 
             {loading ? (
@@ -109,11 +153,19 @@ export default function Team() {
                     <ActivityIndicator size="large" color="#E53935" />
                     <Text style={styles.loadingText}>Carregando...</Text>
                 </View>
+            ) : captured.length === 0 ? (
+                <View style={styles.emptyContainer}>
+                    <Text style={styles.emptyIcon}>⚪</Text>
+                    <Text style={styles.emptyTitle}>Nenhum pokémon capturado</Text>
+                    <Text style={styles.emptySubtitle}>
+                        Vá até a Pokédex e capture pokémons para montar seu time!
+                    </Text>
+                </View>
             ) : (
                 <PokemonList
-                    data={pokemons}
-                    onPressItem={togglePokemon}
-                    selectedIds={team.map(p => p.index)}
+                    data={captured}
+                    onPressItem={handleCapturedPress}
+                    selectedIds={selectedId ? [...teamNumericIds, selectedId] : teamNumericIds}
                 />
             )}
 
@@ -158,6 +210,35 @@ const styles = StyleSheet.create({
         letterSpacing: 1.5,
     },
 
+    swapBanner: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        backgroundColor: '#1A1A3E',
+        borderBottomWidth: 1,
+        borderBottomColor: '#E15610',
+    },
+    swapBannerText: {
+        color: '#9090B0',
+        fontSize: 12,
+        flex: 1,
+    },
+    swapBannerName: {
+        color: '#E15610',
+        fontWeight: '900',
+    },
+    swapCancel: {
+        paddingLeft: 12,
+        paddingVertical: 4,
+    },
+    swapCancelText: {
+        color: '#E53935',
+        fontSize: 16,
+        fontWeight: '900',
+    },
+
     teamSection: {
         backgroundColor: '#12122A',
         paddingHorizontal: 12,
@@ -193,5 +274,30 @@ const styles = StyleSheet.create({
         color: '#9090B0',
         fontSize: 14,
         letterSpacing: 1,
+    },
+
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 32,
+        gap: 12,
+    },
+    emptyIcon: {
+        fontSize: 48,
+        marginBottom: 8,
+    },
+    emptyTitle: {
+        color: '#FFFFFF',
+        fontSize: 16,
+        fontWeight: '800',
+        letterSpacing: 1,
+        textAlign: 'center',
+    },
+    emptySubtitle: {
+        color: '#9090B0',
+        fontSize: 13,
+        textAlign: 'center',
+        lineHeight: 20,
     },
 });
