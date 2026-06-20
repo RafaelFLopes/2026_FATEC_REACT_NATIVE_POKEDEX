@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Auditoria de Projeto — Pokédex React Native</title>
+<style>
+  :root {
+    --bg: #0D0D1F;
+    --surface: #12122A;
+    --border: #1E1E45;
+    --accent: #E53935;
+    --accent2: #E15610;
+    --text: #FFFFFF;
+    --muted: #9090B0;
+    --green: #2ECC71;
+    --yellow: #F1C40F;
+    --orange: #E15610;
+    --blue: #4A90E2;
+    --card-bg: #16163A;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  /* HEADER */
+  .hero {
+    background: linear-gradient(135deg, #12122A 0%, #1A1A3E 100%);
+    border-bottom: 2px solid var(--accent);
+    padding: 48px 32px 36px;
+    text-align: center;
+  }
+  .hero-eyebrow {
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .hero-title {
+    font-size: 36px;
+    font-weight: 900;
+    letter-spacing: 6px;
+    color: #fff;
+    text-shadow: 0 0 32px rgba(229,57,53,0.4);
+    margin-bottom: 8px;
+  }
+  .hero-sub {
+    color: var(--muted);
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+
+  /* LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* SECTION */
+  .section {
+    margin-top: 56px;
+  }
+  .section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 8px 16px;
+    margin-bottom: 24px;
+  }
+  .section-num {
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 2px;
+  }
+  .section-title {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+  .section-desc {
+    color: var(--muted);
+    margin-bottom: 24px;
+    font-size: 14px;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .card-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .card-body {
+    font-size: 14px;
+    color: #C0C0D8;
+    line-height: 1.7;
+  }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(480px, 1fr)); gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: var(--surface); }
+  th { color: var(--muted); font-weight: 800; letter-spacing: 1px; text-transform: uppercase; font-size: 11px; padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  td { padding: 12px 14px; border-bottom: 1px solid var(--border); color: #C0C0D8; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* BADGES */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+  .badge-green  { background: rgba(46,204,113,0.15); color: #2ECC71; border: 1px solid rgba(46,204,113,0.3); }
+  .badge-blue   { background: rgba(74,144,226,0.15); color: #74B6F4; border: 1px solid rgba(74,144,226,0.3); }
+  .badge-yellow { background: rgba(241,196,15,0.15);  color: #F1C40F; border: 1px solid rgba(241,196,15,0.3); }
+  .badge-red    { background: rgba(229,57,53,0.15);   color: #EF5350; border: 1px solid rgba(229,57,53,0.3); }
+  .badge-orange { background: rgba(225,86,16,0.15);   color: #E15610; border: 1px solid rgba(225,86,16,0.3); }
+  .badge-gray   { background: rgba(144,144,176,0.12); color: #9090B0; border: 1px solid rgba(144,144,176,0.2); }
+
+  /* SCORE BAR */
+  .score-wrap { margin-bottom: 20px; }
+  .score-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .score-label { font-size: 13px; font-weight: 700; color: #C0C0D8; }
+  .score-value { font-size: 20px; font-weight: 900; }
+  .score-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .score-bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+  .score-justify { font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.6; }
+
+  /* ERRORS */
+  .error-item { border-left: 4px solid; border-radius: 10px; padding: 16px 18px; margin-bottom: 14px; }
+  .error-grave  { background: rgba(183,28,28,0.08);  border-color: #B71C1C; }
+  .error-medio  { background: rgba(225,86,16,0.08);  border-color: #E15610; }
+  .error-leve   { background: rgba(241,196,15,0.08); border-color: #F1C40F; }
+  .error-title  { font-weight: 800; font-size: 14px; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+  .error-grave  .error-title  { color: #EF5350; }
+  .error-medio  .error-title  { color: #E15610; }
+  .error-leve   .error-title  { color: #F1C40F; }
+  .error-meta   { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .error-body   { font-size: 13px; color: #C0C0D8; line-height: 1.7; }
+  .error-fix    { margin-top: 10px; background: rgba(255,255,255,0.04); border-radius: 6px; padding: 10px 12px; font-size: 12px; color: #B0B0C8; }
+  .error-fix strong { color: var(--green); }
+
+  /* PRIORITY LIST */
+  .priority-item { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .priority-item:last-child { border-bottom: none; }
+  .priority-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; flex-shrink: 0; margin-top: 1px; }
+  .priority-num-red    { background: rgba(229,57,53,0.2);   color: var(--accent); }
+  .priority-num-orange { background: rgba(225,86,16,0.2);   color: #E15610; }
+  .priority-num-gray   { background: rgba(144,144,176,0.15); color: var(--muted); }
+  .priority-content { flex: 1; }
+  .priority-title   { font-weight: 800; font-size: 14px; color: #fff; margin-bottom: 3px; }
+  .priority-desc    { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .priority-gain    { font-size: 12px; color: var(--green); margin-top: 4px; }
+
+  /* FINAL SCORE */
+  .final-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .final-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+  .final-item-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .final-item-score { font-size: 32px; font-weight: 900; }
+  .score-excellent { color: var(--green); }
+  .score-good      { color: #74B6F4; }
+  .score-avg       { color: var(--yellow); }
+  .score-poor      { color: var(--accent); }
+
+  .avg-box { background: linear-gradient(135deg, #1A1A3E 0%, #12122A 100%); border: 2px solid var(--accent); border-radius: 16px; padding: 32px; text-align: center; margin-top: 24px; }
+  .avg-label { font-size: 12px; font-weight: 800; color: var(--muted); letter-spacing: 3px; margin-bottom: 8px; }
+  .avg-score { font-size: 72px; font-weight: 900; color: var(--yellow); text-shadow: 0 0 32px rgba(241,196,15,0.4); }
+  .avg-verdict { font-size: 14px; color: var(--muted); margin-top: 8px; }
+
+  /* PROFESSOR */
+  .professor-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 28px; }
+  .professor-comment { padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 14px; color: #C0C0D8; line-height: 1.7; display: flex; gap: 12px; }
+  .professor-comment:last-child { border-bottom: none; }
+  .professor-comment .icon { flex-shrink: 0; font-size: 18px; }
+
+  /* CODE */
+  code { font-family: 'Fira Code', 'Consolas', monospace; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 12px; color: #A8D8EA; }
+  pre { background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 8px; padding: 16px; overflow-x: auto; font-family: 'Fira Code', 'Consolas', monospace; font-size: 12px; color: #A8D8EA; margin: 12px 0; }
+
+  /* ARCH DIAGRAM */
+  .arch-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; font-size: 13px; }
+  .arch-layer { margin-bottom: 16px; }
+  .arch-layer-title { font-size: 10px; font-weight: 800; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .arch-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .arch-chip { background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; font-size: 12px; color: #C0C0D8; }
+  .arch-chip-accent { border-color: var(--accent); color: #EF5350; background: rgba(229,57,53,0.08); }
+  .arch-chip-green  { border-color: var(--green); color: #2ECC71; background: rgba(46,204,113,0.08); }
+  .arch-chip-blue   { border-color: var(--blue); color: #74B6F4; background: rgba(74,144,226,0.08); }
+  .arch-arrow { text-align: center; color: var(--muted); font-size: 18px; margin: 8px 0; }
+
+  /* POSITIVE/NEGATIVE */
+  .pro-con-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .pro-con-grid { grid-template-columns: 1fr; } .grid-2 { grid-template-columns: 1fr; } }
+  .pros { border-color: rgba(46,204,113,0.3) !important; }
+  .cons { border-color: rgba(229,57,53,0.3) !important; }
+  .pros .card-title { color: var(--green); }
+  .cons .card-title { color: var(--accent); }
+  ul.list { list-style: none; padding: 0; }
+  ul.list li { padding: 5px 0; font-size: 13px; color: #C0C0D8; display: flex; gap: 8px; }
+  ul.list li::before { flex-shrink: 0; }
+  .pros li::before { content: "✓"; color: var(--green); }
+  .cons li::before { content: "✗"; color: var(--accent); }
+
+  /* TOC */
+  .toc { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-top: 32px; }
+  .toc-title { font-size: 12px; font-weight: 800; color: var(--muted); letter-spacing: 2px; margin-bottom: 12px; }
+  .toc-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 4px; }
+  .toc-list a { color: var(--muted); font-size: 13px; text-decoration: none; display: flex; gap: 8px; padding: 4px 0; }
+  .toc-list a:hover { color: #fff; }
+  .toc-list a span { color: var(--accent); font-weight: 700; width: 20px; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-eyebrow">— AUDITORIA TÉCNICA COMPLETA —</div>
+  <div class="hero-title">POKÉDEX</div>
+  <div class="hero-sub">React Native · Expo · TypeScript · Multi-plataforma&emsp;|&emsp;Análise por Arquiteto de Software Sênior</div>
+</div>
+
+<div class="container">
+
+  <div class="toc">
+    <div class="toc-title">ÍNDICE</div>
+    <ul class="toc-list">
+      <li><a href="#etapa1"><span>01</span> Mapeamento do Projeto</a></li>
+      <li><a href="#etapa2"><span>02</span> Inventário de Componentes</a></li>
+      <li><a href="#etapa3"><span>03</span> Análise de Componentização</a></li>
+      <li><a href="#etapa4"><span>04</span> Análise das Telas</a></li>
+      <li><a href="#etapa5"><span>05</span> Boas Práticas de Engenharia</a></li>
+      <li><a href="#etapa6"><span>06</span> Visão do Professor Avaliador</a></li>
+      <li><a href="#etapa7"><span>07</span> Erros Críticos</a></li>
+      <li><a href="#etapa8"><span>08</span> Plano de Melhorias</a></li>
+      <li><a href="#etapa9"><span>09</span> Nota Final</a></li>
+      <li><a href="#etapa10"><span>10</span> Simulação da Correção</a></li>
+    </ul>
+  </div>
+
+  <!-- ===================== ETAPA 1 ===================== -->
+  <div class="section" id="etapa1">
+    <div class="section-badge"><span class="section-num">ETAPA 01</span><span class="section-title">Mapeamento do Projeto</span></div>
+
+    <div class="arch-box" style="margin-bottom:20px;">
+      <div class="arch-layer">
+        <div class="arch-layer-title">Framework & Plataforma</div>
+        <div class="arch-chips">
+          <span class="arch-chip arch-chip-accent">React Native 0.81.5</span>
+          <span class="arch-chip arch-chip-accent">Expo 54</span>
+          <span class="arch-chip">TypeScript 5.9</span>
+          <span class="arch-chip arch-chip-blue">expo-router 6 (file-based routing)</span>
+          <span class="arch-chip">iOS · Android · Web</span>
+        </div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-layer-title">HTTP & Persistência</div>
+        <div class="arch-chips">
+          <span class="arch-chip">Axios 1.16</span>
+          <span class="arch-chip">AsyncStorage 2.2</span>
+          <span class="arch-chip arch-chip-green">AWS API Gateway (backend próprio)</span>
+          <span class="arch-chip arch-chip-blue">PokeAPI (externa)</span>
+        </div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-layer-title">UI & Animações</div>
+        <div class="arch-chips">
+          <span class="arch-chip">React Native Animated (built-in)</span>
+          <span class="arch-chip">react-native-reanimated 4.1 <em style="color:var(--muted)">(instalado, não usado)</em></span>
+          <span class="arch-chip">react-native-svg</span>
+        </div>
+      </div>
+      <div class="arch-arrow">↕</div>
+      <div class="arch-layer">
+        <div class="arch-layer-title">Arquitetura Adotada</div>
+        <div class="arch-chips">
+          <span class="arch-chip">Flat / Feature-less</span>
+          <span class="arch-chip">Context API para Auth</span>
+          <span class="arch-chip">Integration Layer (sem repositórios)</span>
+          <span class="arch-chip arch-chip-accent">Sem Custom Hooks</span>
+          <span class="arch-chip arch-chip-accent">Sem Service Layer</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Estrutura de Pastas</div>
+        <pre style="margin:0;">src/
+├── @types/
+│   └── pokemon.ts              ← types globais
+├── app/
+│   ├── _layout.tsx             ← root (AuthProvider)
+│   ├── (auth)/
+│   │   ├── index.tsx           ← login mobile
+│   │   ├── index.web.tsx       ← login web ⚠️ duplicado
+│   │   ├── register.tsx        ← cadastro mobile
+│   │   └── register.web.tsx    ← cadastro web ⚠️ duplicado
+│   └── (app)/
+│       ├── _layout.tsx         ← guard de auth + NavBar
+│       ├── dashboard.tsx       ← pokédex
+│       ├── profile.tsx         ← perfil mobile
+│       ├── profile.web.tsx     ← perfil web ⚠️ duplicado
+│       └── team.tsx            ← time
+├── components/
+│   ├── alert/    button/  card/  input/
+│   ├── icon/     nav-bar/ pokeball/
+│   ├── pokemon-card/  pokemon-list/
+│   ├── stat-card/  team-slot/
+│   └── pokemon-mascot/
+├── constants/
+│   └── colors.ts               ← sistema de cores
+├── context/
+│   └── AuthContext.tsx
+└── integration/
+    ├── authIntegration.ts
+    ├── pokemonIntegration.ts
+    └── teamIntegration.ts</pre>
+      </div>
+      <div class="card">
+        <div class="card-title">Fluxo de Navegação</div>
+        <div class="card-body" style="font-size:13px;">
+          <div style="background:rgba(229,57,53,0.08);border:1px solid rgba(229,57,53,0.2);border-radius:8px;padding:12px;margin-bottom:10px;">
+            <strong style="color:var(--accent);">(auth)</strong> — acesso público<br>
+            <code>/</code> → Login &emsp; <code>/register</code> → Cadastro
+          </div>
+          <div style="text-align:center;color:var(--muted);margin:6px 0;">↓ signIn() → isAuthenticated = true</div>
+          <div style="background:rgba(46,204,113,0.08);border:1px solid rgba(46,204,113,0.2);border-radius:8px;padding:12px;">
+            <strong style="color:var(--green);">(app)</strong> — guarda via Redirect<br>
+            <code>/dashboard</code> → Pokédex &emsp; <code>/team</code> → Time &emsp; <code>/profile</code> → Perfil
+          </div>
+          <div style="margin-top:12px;font-size:12px;color:var(--muted);">
+            Guarda de rota: <code>AppLayout</code> verifica <code>isAuthenticated</code> e redireciona para <code>/</code> se não autenticado.<br>
+            Persistência via AsyncStorage — login sobrevive ao fechamento do app.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-3" style="margin-top:16px;">
+      <div class="card">
+        <div class="card-title">Camada de Integração</div>
+        <div class="card-body" style="font-size:13px;">
+          Três arquivos separados por domínio:<br><br>
+          <strong style="color:#74B6F4;">authIntegration.ts</strong> — login, register, getStats, updateStats<br><br>
+          <strong style="color:#74B6F4;">pokemonIntegration.ts</strong> — getPokemons (PokeAPI)<br><br>
+          <strong style="color:#74B6F4;">teamIntegration.ts</strong> — getTeam, updateTeam, addCaptured, deleteCaptured<br><br>
+          <span style="color:var(--accent);font-size:12px;">⚠ Chamadas feitas sem o token JWT no header Authorization</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Gerenciamento de Estado</div>
+        <div class="card-body" style="font-size:13px;">
+          <strong style="color:var(--green);">AuthContext</strong> — estado global de autenticação (user, token, userId, isAuthenticated, isLoading)<br><br>
+          Todo o resto: <strong>estado local</strong> via <code>useState</code> em cada tela.<br><br>
+          <span style="color:var(--muted);">Sem Zustand, Redux, ou outro gerenciador global. Para o escopo do projeto está adequado.</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Tipagem</div>
+        <div class="card-body" style="font-size:13px;">
+          <strong>Pokemon</strong> e <strong>Poder</strong> tipados em <code>@types/pokemon.ts</code><br><br>
+          <strong>UserStats</strong> em <code>authIntegration.ts</code><br><br>
+          Cada componente tem <code>types.ts</code> (exceto StatCard e Card).<br><br>
+          <span style="color:var(--accent);font-size:12px;">⚠ 2 usos de <code>any</code> em pokemonIntegration.ts (mapeamento de tipos e stats)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ETAPA 2 ===================== -->
+  <div class="section" id="etapa2">
+    <div class="section-badge"><span class="section-num">ETAPA 02</span><span class="section-title">Inventário de Componentes</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Componente</th>
+            <th>Localização</th>
+            <th>Responsabilidade</th>
+            <th>Utilizado em</th>
+            <th>Usos</th>
+            <th>Reutilização</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Alert</strong></td>
+            <td><code>components/alert/</code></td>
+            <td>Notificação feedback ao usuário. iOS/Android: RNAlert nativo. Web: Modal animado com auto-close 6s. Sistema semântico de cores (success/error/warning/info).</td>
+            <td>Login, Register, Dashboard, Team</td>
+            <td>4</td>
+            <td><span class="badge badge-green">Excelente</span></td>
+          </tr>
+          <tr>
+            <td><strong>Button</strong></td>
+            <td><code>components/button/</code></td>
+            <td>Botão primário customizável. Platform-specific (activeOpacity diferente). Aceita style override.</td>
+            <td>Login, Register, Profile (mobile e web)</td>
+            <td>5+ instâncias</td>
+            <td><span class="badge badge-green">Excelente</span></td>
+          </tr>
+          <tr>
+            <td><strong>Card</strong></td>
+            <td><code>components/card/</code></td>
+            <td>Container estilizado com fundo escuro, bordas e sombra. Wrapper genérico para conteúdo.</td>
+            <td>Login, Register, Profile (mobile e web)</td>
+            <td>4</td>
+            <td><span class="badge badge-blue">Bom</span></td>
+          </tr>
+          <tr>
+            <td><strong>Input</strong></td>
+            <td><code>components/input/</code></td>
+            <td>Wrapper sobre TextInput com estilo padrão da aplicação.</td>
+            <td>Login, Register, Profile (mobile e web)</td>
+            <td>8+ instâncias</td>
+            <td><span class="badge badge-blue">Bom</span></td>
+          </tr>
+          <tr>
+            <td><strong>Icon</strong></td>
+            <td><code>components/icon/</code></td>
+            <td>Wrapper genérico para componentes SVG com size e color.</td>
+            <td><em style="color:var(--accent)">Não utilizado por nenhuma tela ou componente</em></td>
+            <td>0</td>
+            <td><span class="badge badge-red">Ruim</span></td>
+          </tr>
+          <tr>
+            <td><strong>Pokeball</strong></td>
+            <td><code>components/pokeball/</code></td>
+            <td>Pokébola estática desenhada via Views aninhados (sem SVG). Tamanho parametrizável.</td>
+            <td>Login (card header, decorativo), Register (card header, decorativo), SpinningPokeball</td>
+            <td>5+ instâncias</td>
+            <td><span class="badge badge-blue">Bom</span></td>
+          </tr>
+          <tr>
+            <td><strong>SpinningPokeball</strong></td>
+            <td><code>components/pokeball/spinning.tsx</code></td>
+            <td>Pokébola com animação de rotação contínua. Usa Animated.loop + timing. Aceita size, duration, style.</td>
+            <td>Login, Register</td>
+            <td>4 instâncias (2 por tela)</td>
+            <td><span class="badge badge-yellow">Regular</span></td>
+          </tr>
+          <tr>
+            <td><strong>PokemonMascot</strong></td>
+            <td><code>components/pokemon-mascot/</code></td>
+            <td>Exibe Pikachu (hardcoded #25) com animação de brilho pulsante. URL externa do GitHub.</td>
+            <td>Login, Register</td>
+            <td>2</td>
+            <td><span class="badge badge-yellow">Regular</span></td>
+          </tr>
+          <tr>
+            <td><strong>PokemonCard</strong></td>
+            <td><code>components/pokemon-card/</code></td>
+            <td>Card completo de pokémon: imagem, nome, índice, tipos, barras de stats. Suporta onPress, selected, onCapture/captured. Platform-specific.</td>
+            <td>PokemonList (interno)</td>
+            <td>Indireto (via PokemonList)</td>
+            <td><span class="badge badge-blue">Bom</span></td>
+          </tr>
+          <tr>
+            <td><strong>PokemonList</strong></td>
+            <td><code>components/pokemon-list/</code></td>
+            <td>FlatList de PokemonCards. Aceita data, onPressItem, selectedIds, capturedIds, onCapture. Platform-specific (1 col mobile, 2-4 cols web).</td>
+            <td>Dashboard, Team</td>
+            <td>2</td>
+            <td><span class="badge badge-green">Excelente</span></td>
+          </tr>
+          <tr>
+            <td><strong>StatCard</strong></td>
+            <td><code>components/stat-card/</code></td>
+            <td>Badge de estatística: valor grande + label. Cor customizável. Sem platform-split.</td>
+            <td>Profile (mobile e web)</td>
+            <td>6 instâncias (3+3)</td>
+            <td><span class="badge badge-yellow">Regular</span></td>
+          </tr>
+          <tr>
+            <td><strong>NavBar</strong></td>
+            <td><code>components/nav-bar/</code></td>
+            <td>Barra de navegação inferior com 3 abas (Pokédex, Time, Perfil). Ícones SVG inline. Indicador ativo. Platform-specific.</td>
+            <td>AppLayout</td>
+            <td>1</td>
+            <td><span class="badge badge-yellow">Regular</span></td>
+          </tr>
+          <tr>
+            <td><strong>TeamSlot</strong></td>
+            <td><code>components/team-slot/</code></td>
+            <td>Slot do time: vazio (tracejado + ?) ou preenchido (imagem, nome, cor por tipo). SwapMode ativa onRemove. Platform-specific.</td>
+            <td>Team</td>
+            <td>5 instâncias</td>
+            <td><span class="badge badge-green">Excelente</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===================== ETAPA 3 ===================== -->
+  <div class="section" id="etapa3">
+    <div class="section-badge"><span class="section-num">ETAPA 03</span><span class="section-title">Análise de Componentização</span></div>
+
+    <div class="grid-2">
+
+      <div class="card pros">
+        <div class="card-title">O que foi bem feito</div>
+        <ul class="list pros">
+          <li>Pattern platform-specific (<code>ios/android/web</code>) aplicado corretamente em Alert, Button, NavBar, PokemonCard, PokemonList, TeamSlot</li>
+          <li>PokemonCard e PokemonList bem encapsulados — toda a lógica de listagem está nos componentes</li>
+          <li>TeamSlot gerencia seus próprios estados visuais (empty, filled, swapMode)</li>
+          <li>Pokeball/SpinningPokeball seguem o princípio de composição corretamente</li>
+          <li>Alert com sistema semântico de cores bem definido</li>
+        </ul>
+      </div>
+
+      <div class="card cons">
+        <div class="card-title">Problemas encontrados</div>
+        <ul class="list cons">
+          <li><strong>Icon</strong> existe mas ninguém o usa — NavBar define ícones SVG diretamente inline</li>
+          <li>Nenhum hook customizado — lógica de Alert, loading e fetch duplicada em 4 telas</li>
+          <li>Não existe <code>PageHeader</code> — header com logo e fundo é repetido em Dashboard e Profile</li>
+          <li>PokemonMascot está acoplado a Pikachu (hardcoded URL). Nome sugere reusabilidade inexistente</li>
+          <li>StatCard não tem <code>types.ts</code> separado, inconsistente com os demais componentes</li>
+          <li>Button não expõe <code>textStyle</code> — cor do texto não é customizável</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="section-desc" style="margin-top:24px;">Componentes faltando que deveriam existir:</div>
+    <div class="grid-3">
+      <div class="card" style="border-left:3px solid var(--accent);">
+        <div class="card-title">useAlert (hook)</div>
+        <div class="card-body" style="font-size:13px;">
+          A lógica de <code>alertData</code> + <code>isAlertVisible</code> + <code>showAlert()</code> é copiada em Login, Register, Dashboard e Team — quatro arquivos. Um hook customizado eliminaria essa duplicação completamente.
+          <pre>// Deveria existir em src/hooks/useAlert.ts
+function useAlert() {
+  const [visible, setVisible] = useState(false);
+  const [data, setData] = useState({...});
+  function show(title, message, type) {...}
+  return { visible, data, show, hide };
+}</pre>
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--orange);">
+        <div class="card-title">PageHeader (componente)</div>
+        <div class="card-body" style="font-size:13px;">
+          O header com logo Pokémon (fundo <code>#12122A</code>, borda inferior, logo centralizado) aparece identicamente em <code>dashboard.tsx</code> e <code>profile.tsx</code>. Deveria ser um componente <code>PageHeader</code> com slot opcional para conteúdo direito (como o contador de capturados).
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--blue);">
+        <div class="card-title">LoadingScreen (componente)</div>
+        <div class="card-body" style="font-size:13px;">
+          O padrão <code>loading ? ActivityIndicator : conteúdo</code> aparece em Dashboard, Team e Profile com o mesmo visual. Um componente <code>LoadingOverlay</code> ou um hook <code>useLoading</code> centralizaria isso.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ETAPA 4 ===================== -->
+  <div class="section" id="etapa4">
+    <div class="section-badge"><span class="section-num">ETAPA 04</span><span class="section-title">Análise das Telas</span></div>
+
+    <!-- LOGIN -->
+    <div class="card" style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div class="card-title" style="font-size:16px;">Tela de Login</div>
+        <div style="display:flex;gap:8px;"><span class="badge badge-yellow">Duplicada</span><span class="badge badge-gray">auth/index.tsx + index.web.tsx</span></div>
+      </div>
+      <div class="grid-2" style="gap:12px;">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:6px;">COMPONENTES UTILIZADOS</div>
+          <div style="font-size:13px;color:#C0C0D8;">SpinningPokeball (×2) · Pokeball (×1) · PokemonMascot · Card · Input (×2) · Button (×2) · Alert</div>
+          <br>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:6px;">RESPONSABILIDADE</div>
+          <div style="font-size:13px;color:#C0C0D8;">Autenticação do usuário + UI decorativa animada. Lógica de validação e chamada via <code>signIn()</code> do AuthContext. Redireciona para <code>/dashboard</code> se já autenticado.</div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:6px;">PROBLEMAS IDENTIFICADOS</div>
+          <ul class="list cons">
+            <li>A lógica de <code>handleLogin</code> e todo o estado de alert são copiados bit-a-bit em <code>index.web.tsx</code>. Um bug nessa lógica precisa ser corrigido em 2 arquivos.</li>
+            <li>Estilo <code>hint</code> declarado mas nunca referenciado no JSX — código morto.</li>
+            <li>Nenhuma validação de tamanho mínimo de senha.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="card" style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div class="card-title" style="font-size:16px;">Tela de Cadastro</div>
+        <div style="display:flex;gap:8px;"><span class="badge badge-yellow">Provavelmente duplicada</span><span class="badge badge-gray">auth/register.tsx + register.web.tsx</span></div>
+      </div>
+      <div class="grid-2" style="gap:12px;">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:6px;">COMPONENTES UTILIZADOS</div>
+          <div style="font-size:13px;color:#C0C0D8;">SpinningPokeball (×2) · Pokeball (×1) · PokemonMascot · Card · Input (×3) · Button (×2) · Alert</div>
+          <br>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:6px;">RESPONSABILIDADE</div>
+          <div style="font-size:13px;color:#C0C0D8;">Criação de conta com validação de confirmação de senha. Redireciona para Login após sucesso com <code>setTimeout</code> de 1.8s.</div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:6px;">PROBLEMAS IDENTIFICADOS</div>
+          <ul class="list cons">
+            <li>Visual idêntico ao Login — a única diferença é o número de campos e o texto do heading. Poderia ser uma tela única parametrizada ou compartilhar um layout wrapper.</li>
+            <li>Navegação pós-sucesso usa <code>setTimeout</code> em vez de <code>router.replace</code> após fechar o alert — frágil.</li>
+            <li>Estilo <code>hint</code> declarado mas não referenciado (igual ao Login).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="card" style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div class="card-title" style="font-size:16px;">Dashboard — Pokédex</div>
+        <div style="display:flex;gap:8px;"><span class="badge badge-green">Bem estruturada</span><span class="badge badge-gray">app/dashboard.tsx</span></div>
+      </div>
+      <div class="grid-2" style="gap:12px;">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:6px;">COMPONENTES UTILIZADOS</div>
+          <div style="font-size:13px;color:#C0C0D8;">PokemonList · Alert · ActivityIndicator (inline)</div>
+          <br>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:6px;">PONTOS POSITIVOS</div>
+          <ul class="list pros">
+            <li>Usa <code>Promise.all</code> para carregar pokémons e time em paralelo</li>
+            <li>Lógica de capture encapsulada em <code>handleCapture</code></li>
+            <li>Normalização de ID (<code>parseInt</code>) para comparação com dados do backend</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:6px;">PROBLEMAS IDENTIFICADOS</div>
+          <ul class="list cons">
+            <li>Estado de Alert copiado — deveria usar <code>useAlert()</code></li>
+            <li>Header (logo + fundo) é inline — deveria ser componente <code>PageHeader</code></li>
+            <li>Cor <code>#2ECC71</code> hardcoded no capturedCount — não usa Colors</li>
+            <li>Cor <code>#E53935</code> hardcoded no ActivityIndicator — não usa Colors</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAM -->
+    <div class="card" style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div class="card-title" style="font-size:16px;">Tela de Time</div>
+        <div style="display:flex;gap:8px;"><span class="badge badge-blue">Complexa mas organizada</span><span class="badge badge-gray">app/team.tsx</span></div>
+      </div>
+      <div class="grid-2" style="gap:12px;">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:6px;">COMPONENTES UTILIZADOS</div>
+          <div style="font-size:13px;color:#C0C0D8;">PokemonList · TeamSlot (×5) · Alert · ActivityIndicator (inline)</div>
+          <br>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:6px;">PONTOS POSITIVOS</div>
+          <ul class="list pros">
+            <li>Uso correto de <code>useFocusEffect</code> para recarregar ao navegar para a tela</li>
+            <li>Cleanup com flag <code>active</code> para evitar setState em componente desmontado</li>
+            <li>Lógica de swap bem implementada com estados claros</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:6px;">PROBLEMAS IDENTIFICADOS</div>
+          <ul class="list cons">
+            <li>Estado de Alert copiado — deveria usar <code>useAlert()</code></li>
+            <li>Comparação em <code>selectedIds</code> passado para PokemonList usa IDs normalizados, mas <code>item.index</code> no PokemonListIOS usa o índice original padded ("001") — risco de bug visual de highlight</li>
+            <li>Lógica de swap nesta tela é UI + negócio — poderia ser extraída para hook <code>useTeamManager</code></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="card" style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div class="card-title" style="font-size:16px;">Tela de Perfil</div>
+        <div style="display:flex;gap:8px;"><span class="badge badge-red">Bug crítico</span><span class="badge badge-yellow">Duplicada</span><span class="badge badge-gray">profile.tsx + profile.web.tsx</span></div>
+      </div>
+      <div class="grid-2" style="gap:12px;">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:6px;">COMPONENTES UTILIZADOS</div>
+          <div style="font-size:13px;color:#C0C0D8;">Card · Input · Button · StatCard (×3) · ActivityIndicator (inline)</div>
+          <br>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:6px;">RESPONSABILIDADE</div>
+          <div style="font-size:13px;color:#C0C0D8;">Exibe dados do treinador, estatísticas do backend, e ações de editar/sair.</div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:6px;">PROBLEMAS CRÍTICOS</div>
+          <ul class="list cons">
+            <li><strong style="color:var(--accent);">BUG:</strong> Botão "SALVAR" apenas chama <code>setEditMode(false)</code>. A função <code>updateStats()</code> existe mas NUNCA é chamada. O nome é editável na tela mas a alteração se perde.</li>
+            <li>Lógica de <code>loadStats</code> + estados copiados integralmente em <code>profile.web.tsx</code>. Um bug na carga de stats precisa ser corrigido em dois lugares.</li>
+            <li>Telas mobile e web têm diferenças visuais (tag "TREINADOR", header separado) que poderiam ser tratadas com props condicionais.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===================== ETAPA 5 ===================== -->
+  <div class="section" id="etapa5">
+    <div class="section-badge"><span class="section-num">ETAPA 05</span><span class="section-title">Boas Práticas de Engenharia de Software</span></div>
+
+    <div class="grid-2">
+
+      <!-- SOLID -->
+      <div class="card">
+        <div class="score-wrap">
+          <div class="score-header">
+            <div class="score-label">SOLID</div>
+            <div class="score-value" style="color:#F1C40F;">4.5<span style="font-size:16px;color:var(--muted);">/10</span></div>
+          </div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:45%;background:#F1C40F;"></div></div>
+        </div>
+        <div class="score-justify">
+          <strong>SRP (Single Responsibility):</strong> Telas acumulam UI + estado + lógica de negócio + chamadas API + estado de alert. Dashboard.tsx faz fetch de dados, normalização de IDs, lógica de captura e gerenciamento de UI.<br><br>
+          <strong>OCP (Open/Closed):</strong> Para adicionar novo tipo de pokémon seria necessário editar <code>colors.ts</code> — aceitável. Para adicionar nova tela autenticada é simples. Razoável.<br><br>
+          <strong>DIP (Dependency Inversion):</strong> Telas dependem diretamente das funções de integração. Não existe interface ou abstração intermediária. Se a API mudar, múltiplas telas precisam ser alteradas.
+        </div>
+      </div>
+
+      <!-- Clean Code -->
+      <div class="card">
+        <div class="score-wrap">
+          <div class="score-header">
+            <div class="score-label">Clean Code</div>
+            <div class="score-value" style="color:#74B6F4;">6.0<span style="font-size:16px;color:var(--muted);">/10</span></div>
+          </div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:60%;background:#74B6F4;"></div></div>
+        </div>
+        <div class="score-justify">
+          Nomes de variáveis e funções são claros e descritivos (<code>handleCapture</code>, <code>handleSlotSwap</code>, <code>toNumericId</code>). Funções pequenas e com única responsabilidade.<br><br>
+          <strong>Problemas:</strong> Magic strings de cor em todo o código (<code>'#E53935'</code>, <code>'#0D0D1F'</code>, <code>'#12122A'</code>) quando existe um sistema de cores importável. Estado de alert duplicado 4 vezes. Estilo <code>hint</code> declarado mas nunca usado em 2 arquivos.
+        </div>
+      </div>
+
+      <!-- Componentização -->
+      <div class="card">
+        <div class="score-wrap">
+          <div class="score-header">
+            <div class="score-label">Componentização</div>
+            <div class="score-value" style="color:#74B6F4;">6.5<span style="font-size:16px;color:var(--muted);">/10</span></div>
+          </div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:65%;background:#74B6F4;"></div></div>
+        </div>
+        <div class="score-justify">
+          O conjunto de componentes cobre bem o necessário. A abordagem platform-specific é madura e correta. PokemonCard e TeamSlot são bem projetados.<br><br>
+          <strong>Pontos que derrubam a nota:</strong> Icon component sem uso nenhum. Ausência de PageHeader e LoadingOverlay (padrões visuais repetidos). Ausência completa de custom hooks — lógica repetida deveria estar em <code>src/hooks/</code>.
+        </div>
+      </div>
+
+      <!-- Reutilização -->
+      <div class="card">
+        <div class="score-wrap">
+          <div class="score-header">
+            <div class="score-label">Reutilização de Código</div>
+            <div class="score-value" style="color:var(--accent);">4.5<span style="font-size:16px;color:var(--muted);">/10</span></div>
+          </div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:45%;background:var(--accent);"></div></div>
+        </div>
+        <div class="score-justify">
+          Este é o maior ponto fraco do projeto. Três pares de arquivos mobile/web duplicam 90%+ do código incluindo toda a lógica de negócio. O padrão de alert é copiado em 4 telas. O header visual é copiado em 2 telas. A função <code>toNumericId</code> é definida inline em team.tsx quando poderia ser um utilitário compartilhado.
+        </div>
+      </div>
+
+      <!-- Organização de Pastas -->
+      <div class="card">
+        <div class="score-wrap">
+          <div class="score-header">
+            <div class="score-label">Organização de Pastas</div>
+            <div class="score-value" style="color:var(--green);">7.0<span style="font-size:16px;color:var(--muted);">/10</span></div>
+          </div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:70%;background:var(--green);"></div></div>
+        </div>
+        <div class="score-justify">
+          A estrutura <code>app/</code>, <code>components/</code>, <code>context/</code>, <code>integration/</code>, <code>constants/</code> está bem organizada e segue convenções do Expo Router. <br><br>
+          <strong>Faltando:</strong> <code>src/hooks/</code> para hooks customizados. <code>src/utils/</code> para funções utilitárias como <code>toNumericId</code>. A nomenclatura "integration" é incomum — "services" ou "api" seria mais reconhecível pela comunidade.
+        </div>
+      </div>
+
+      <!-- Escalabilidade -->
+      <div class="card">
+        <div class="score-wrap">
+          <div class="score-header">
+            <div class="score-label">Escalabilidade</div>
+            <div class="score-value" style="color:var(--yellow);">5.5<span style="font-size:16px;color:var(--muted);">/10</span></div>
+          </div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:55%;background:var(--yellow);"></div></div>
+        </div>
+        <div class="score-justify">
+          A abordagem platform-specific (<code>.ios/.android/.web</code>) escala bem para adicionar suporte a novas plataformas. O sistema de cores por tipo de pokémon é extensível. A separação em integration files está boa.<br><br>
+          <strong>Problemas:</strong> Adicionar uma nova tela exige reimplementar o padrão alert + loading do zero. A duplicação mobile/web cresce linearmente com novas telas. Sem hooks, sem repositório — difícil adicionar cache ou offline.
+        </div>
+      </div>
+
+      <!-- Manutenibilidade -->
+      <div class="card">
+        <div class="score-wrap">
+          <div class="score-header">
+            <div class="score-label">Manutenibilidade</div>
+            <div class="score-value" style="color:var(--accent);">5.0<span style="font-size:16px;color:var(--muted);">/10</span></div>
+          </div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:50%;background:var(--accent);"></div></div>
+        </div>
+        <div class="score-justify">
+          A duplicação é o inimigo principal da manutenibilidade. Corrigir o bug do botão "SALVAR" no perfil requer editar 2 arquivos. Uma mudança no fluxo de login precisa ser feita em 2 arquivos. O token JWT não está sendo enviado — se alguém quisesse corrigir, teria que atualizar múltiplos pontos.
+        </div>
+      </div>
+
+      <!-- Legibilidade -->
+      <div class="card">
+        <div class="score-wrap">
+          <div class="score-header">
+            <div class="score-label">Legibilidade</div>
+            <div class="score-value" style="color:var(--green);">7.0<span style="font-size:16px;color:var(--muted);">/10</span></div>
+          </div>
+          <div class="score-bar-bg"><div class="score-bar-fill" style="width:70%;background:var(--green);"></div></div>
+        </div>
+        <div class="score-justify">
+          Nomes de variáveis, funções e componentes são claros. A consistência do idioma (PT-BR para nomes de domínio como <code>nome</code>, <code>vitorias</code>) é mantida. O uso de SCREAMING_SNAKE_CASE para constantes como <code>MAX_TEAM</code> é correto. Arquivos bem formatados.<br><br>
+          <strong>Ponto negativo:</strong> Strings de cor sem semântica (<code>'#E53935'</code> em vez de <code>Colors.accent</code> / <code>Colors.semantic.error.text</code>).
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===================== ETAPA 6 ===================== -->
+  <div class="section" id="etapa6">
+    <div class="section-badge"><span class="section-num">ETAPA 06</span><span class="section-title">Visão do Professor Avaliador</span></div>
+
+    <div class="professor-box">
+
+      <div class="professor-comment">
+        <div class="icon">1️⃣</div>
+        <div>
+          <strong>A separação entre telas e componentes foi feita corretamente?</strong><br>
+          <span style="color:#C0C0D8;">Parcialmente. Os componentes visuais estão bem separados — Button, Card, Input, Alert, PokemonCard, TeamSlot estão em seus próprios módulos e são usados pelas telas. O problema está na <em>lógica de negócio dentro das telas</em>: handleCapture, handleSlotSwap, loadStats — toda essa lógica de domínio deveria estar em custom hooks (<code>useDashboard</code>, <code>useTeamManager</code>, <code>useProfile</code>), deixando as telas como camadas puramente de composição visual.</span>
+        </div>
+      </div>
+
+      <div class="professor-comment">
+        <div class="icon">2️⃣</div>
+        <div>
+          <strong>Existem componentes desnecessários?</strong><br>
+          <span style="color:#C0C0D8;">Sim. O componente <code>Icon</code> foi criado mas nunca é utilizado em nenhuma parte do projeto. O NavBar define seus próprios ícones SVG inline em vez de usar o Icon. É um componente morto que ocupa espaço sem valor.</span>
+        </div>
+      </div>
+
+      <div class="professor-comment">
+        <div class="icon">3️⃣</div>
+        <div>
+          <strong>Existem componentes faltando?</strong><br>
+          <span style="color:#C0C0D8;">Sim, três claramente: <strong>PageHeader</strong> (header com logo repetido em 2 telas), <strong>LoadingOverlay</strong> ou padrão de loading consistente, e principalmente <strong>useAlert</strong> como custom hook — o padrão de alert está copiado em 4 telas.</span>
+        </div>
+      </div>
+
+      <div class="professor-comment">
+        <div class="icon">4️⃣</div>
+        <div>
+          <strong>Existe reutilização adequada?</strong><br>
+          <span style="color:#C0C0D8;">A reutilização de componentes visuais é boa. A reutilização de lógica é insuficiente. O maior problema é a duplicação das telas mobile/web (Login, Register, Profile) que copiam toda a lógica de negócio. Um professor focado em arquitetura vai identificar isso imediatamente como violação do DRY.</span>
+        </div>
+      </div>
+
+      <div class="professor-comment">
+        <div class="icon">5️⃣</div>
+        <div>
+          <strong>O projeto parece profissional?</strong><br>
+          <span style="color:#C0C0D8;">Visualmente sim — a UI tem identidade visual coerente, animações cuidadosas, sistema de cores por tipo de pokémon, e suporte multi-plataforma. Isso impressiona à primeira vista. Mas sob o capô, a duplicação de código, o bug do botão SALVAR que não salva nada, e a ausência de custom hooks mostram imaturidade arquitetural.</span>
+        </div>
+      </div>
+
+      <div class="professor-comment">
+        <div class="icon">6️⃣</div>
+        <div>
+          <strong>O que mais chamaria atenção NEGATIVAMENTE?</strong><br>
+          <span style="color:#C0C0D8;">
+          <strong style="color:var(--accent);">1. O botão "SALVAR" no perfil não salva nada.</strong> Isso é uma feature incompleta — o modo de edição existe na tela mas a alteração nunca é persistida.<br><br>
+          <strong style="color:var(--accent);">2. A duplicação dos arquivos .web.tsx</strong> com toda a lógica de negócio copiada. Um professor de Engenharia de Software vai abrir index.tsx e index.web.tsx lado a lado e ver 90% do código idêntico — isso é textbook DRY violation.<br><br>
+          <strong style="color:var(--accent);">3. O componente Icon existe mas não é usado</strong> — e o NavBar redefine ícones inline. Mostra falta de coesão no design do sistema.
+          </span>
+        </div>
+      </div>
+
+      <div class="professor-comment">
+        <div class="icon">7️⃣</div>
+        <div>
+          <strong>O que mais chamaria atenção POSITIVAMENTE?</strong><br>
+          <span style="color:#C0C0D8;">
+          <strong style="color:var(--green);">1. A estratégia platform-specific</strong> — usar <code>index.ios.tsx</code>, <code>index.android.tsx</code>, <code>index.web.tsx</code> para Alert, Button, NavBar, PokemonCard demonstra conhecimento avançado de React Native. Poucos alunos fazem isso.<br><br>
+          <strong style="color:var(--green);">2. O AuthContext</strong> está bem implementado com persistência via AsyncStorage, cleanup correto no signOut, e carregamento de dados iniciais no useEffect.<br><br>
+          <strong style="color:var(--green);">3. A qualidade visual</strong> — sistema de cores por tipo de pokémon, animações suaves, dark theme consistente.
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===================== ETAPA 7 ===================== -->
+  <div class="section" id="etapa7">
+    <div class="section-badge"><span class="section-num">ETAPA 07</span><span class="section-title">Erros Críticos</span></div>
+
+    <!-- GRAVES -->
+    <div style="font-size:11px;font-weight:800;color:var(--accent);letter-spacing:2px;margin-bottom:12px;">🔴 GRAVES</div>
+
+    <div class="error-item error-grave">
+      <div class="error-title">🔴 Botão SALVAR no perfil não persiste dados</div>
+      <div class="error-meta">Arquivo: src/app/(app)/profile.tsx · Linha 89 &nbsp;|&nbsp; Repetido em profile.web.tsx · Linha 77</div>
+      <div class="error-body">
+        O botão "SALVAR" chama apenas <code>setEditMode(false)</code>. A função <code>updateStats()</code> está exportada em <code>authIntegration.ts</code> e nunca é chamada. O usuário pode editar seu nome na tela, clicar em SALVAR, e a alteração se perde ao recarregar o app. É uma feature que parece funcionar mas não funciona.
+      </div>
+      <div class="error-fix"><strong>Correção:</strong> Chamar <code>updateStats(userId, { level: nivel, vitorias, derrotas })</code> (ou o endpoint correto para nome) antes de <code>setEditMode(false)</code>. Adicionar estado de loading durante o save e exibir Alert de sucesso/erro.</div>
+    </div>
+
+    <div class="error-item error-grave">
+      <div class="error-title">🔴 Token JWT não enviado nas requisições autenticadas</div>
+      <div class="error-meta">Arquivos: src/integration/teamIntegration.ts · src/integration/authIntegration.ts</div>
+      <div class="error-body">
+        O <code>AuthContext</code> armazena o token retornado pelo login, mas nenhum dos arquivos de integração envia o token no header <code>Authorization: Bearer &lt;token&gt;</code>. As chamadas para <code>/pokemon/v1/team</code>, <code>/pokemon/v1/captured</code> e <code>/auth/v1/stats</code> vão sem autenticação. Se a API não valida o token server-side, qualquer userId poderia acessar dados de outros usuários.
+      </div>
+      <div class="error-fix"><strong>Correção:</strong> Criar um interceptor Axios que leia o token do AuthContext ou AsyncStorage e adicione ao header de toda requisição autenticada. Alternativamente, passar o token como parâmetro para as funções de integração.</div>
+    </div>
+
+    <div class="error-item error-grave">
+      <div class="error-title">🔴 Duplicação de lógica de negócio entre arquivos mobile e web</div>
+      <div class="error-meta">index.tsx vs index.web.tsx · register.tsx vs register.web.tsx · profile.tsx vs profile.web.tsx</div>
+      <div class="error-body">
+        Os três pares de arquivos copiam ~90% do código, incluindo <strong>toda a lógica de negócio</strong>: <code>handleLogin</code>, <code>handleRegister</code>, <code>loadStats</code>, declaração de estados, handlers de alert. A única diferença real é o layout (ScrollView vs View centralizada, maxWidth, tamanho de pokéball). Isso viola diretamente o princípio DRY e cria 3 pontos duplicados de manutenção.
+      </div>
+      <div class="error-fix"><strong>Correção:</strong> Extrair toda a lógica para hooks customizados (<code>useLoginForm</code>, <code>useRegisterForm</code>, <code>useProfileData</code>). Os arquivos .tsx ficam apenas com o layout. Lógica em um lugar só.</div>
+    </div>
+
+    <!-- MÉDIOS -->
+    <div style="font-size:11px;font-weight:800;color:var(--orange);letter-spacing:2px;margin:24px 0 12px;">🟠 MÉDIOS</div>
+
+    <div class="error-item error-medio">
+      <div class="error-title">🟠 Padrão de Alert duplicado em 4 telas</div>
+      <div class="error-meta">index.tsx · register.tsx · dashboard.tsx · team.tsx</div>
+      <div class="error-body">
+        Os estados <code>alertData</code> + <code>isAlertVisible</code> e a função <code>showAlert()</code> são copiados com variações mínimas em 4 telas diferentes. Qualquer alteração no comportamento padrão do alert precisa ser feita em 4 lugares.
+      </div>
+      <div class="error-fix"><strong>Correção:</strong> Criar <code>src/hooks/useAlert.ts</code> que encapsula esse padrão e retorna <code>{ visible, data, show, hide }</code>.</div>
+    </div>
+
+    <div class="error-item error-medio">
+      <div class="error-title">🟠 Componente Icon criado porém completamente ignorado</div>
+      <div class="error-meta">src/components/icon/index.tsx</div>
+      <div class="error-body">
+        O componente <code>Icon</code> foi desenvolvido para ser um wrapper de ícones SVG reutilizável, mas o NavBar — o único lugar com ícones SVG no app — define seus próprios componentes <code>PokedexIcon</code>, <code>TeamIcon</code> e <code>ProfileIcon</code> inline. O Icon não é importado em lugar algum.
+      </div>
+      <div class="error-fix"><strong>Correção:</strong> Usar o Icon no NavBar (ou remover o componente se não for usar). Manter código morto cria confusão.</div>
+    </div>
+
+    <div class="error-item error-medio">
+      <div class="error-title">🟠 Sistema de Cores ignorado na maioria dos arquivos</div>
+      <div class="error-meta">Praticamente todas as telas e componentes</div>
+      <div class="error-body">
+        O arquivo <code>constants/colors.ts</code> foi criado com <code>Colors</code> (cores semânticas) e <code>getColor()</code> (cores por tipo), mas apenas dois arquivos o utilizam: <code>alert/index.web.tsx</code> e <code>pokemon-card/styles.ts</code>. Todas as telas usam strings hex hardcoded — <code>'#0D0D1F'</code>, <code>'#E53935'</code>, <code>'#12122A'</code>, <code>'#9090B0'</code> — que poderiam ser constantes do Colors.
+      </div>
+      <div class="error-fix"><strong>Correção:</strong> Adicionar as cores do tema escuro ao Colors (<code>Colors.bgPrimary</code>, <code>Colors.bgSurface</code>, <code>Colors.bgBorder</code>, <code>Colors.accentRed</code>) e substituir as strings hardcoded.</div>
+    </div>
+
+    <div class="error-item error-medio">
+      <div class="error-title">🟠 URL de imagem do PokemonMascot hardcoded no código</div>
+      <div class="error-meta">src/components/pokemon-mascot/index.tsx · Linha 33</div>
+      <div class="error-body">
+        A URL <code>https://raw.githubusercontent.com/PokeAPI/sprites/master/...</code> está hardcoded no componente. Se o CDN ficar indisponível, a tela de login fica sem imagem. Além disso, o componente se chama "PokemonMascot" mas é hardcoded para Pikachu — não é reaproveitável para outro pokémon.
+      </div>
+      <div class="error-fix"><strong>Correção:</strong> Passar a URL ou o ID do pokémon como prop, ou importar a imagem localmente como asset.</div>
+    </div>
+
+    <!-- LEVES -->
+    <div style="font-size:11px;font-weight:800;color:var(--yellow);letter-spacing:2px;margin:24px 0 12px;">🟡 LEVES</div>
+
+    <div class="error-item error-leve">
+      <div class="error-title">🟡 react-native-reanimated instalado mas não utilizado</div>
+      <div class="error-meta">package.json</div>
+      <div class="error-body">A biblioteca de animações mais pesada do RN está no package.json, mas todas as animações usam o <code>Animated</code> built-in do React Native. Dependência desnecessária aumenta o bundle.</div>
+    </div>
+
+    <div class="error-item error-leve">
+      <div class="error-title">🟡 Estilo <code>hint</code> declarado mas nunca referenciado no JSX</div>
+      <div class="error-meta">src/app/(auth)/index.tsx · src/app/(auth)/index.web.tsx</div>
+      <div class="error-body">O StyleSheet define <code>hint</code> nos dois arquivos de login, mas nenhum elemento usa <code>style={styles.hint}</code>. Código morto.</div>
+    </div>
+
+    <div class="error-item error-leve">
+      <div class="error-title">🟡 <code>updateStats</code> exportada mas nunca chamada</div>
+      <div class="error-meta">src/integration/authIntegration.ts · Linha 29</div>
+      <div class="error-body">Função exportada sem consumidores no projeto. Dead code de API — relacionado ao bug do botão SALVAR.</div>
+    </div>
+
+    <div class="error-item error-leve">
+      <div class="error-title">🟡 <code>any</code> em pokemonIntegration.ts</div>
+      <div class="error-meta">src/integration/pokemonIntegration.ts · Linhas 22–23</div>
+      <div class="error-body"><code>(t: any)</code> e <code>(s: any)</code> no mapeamento de tipos e stats da PokeAPI. TypeScript configurado em strict mode mas o benefício é perdido nesse ponto.</div>
+    </div>
+
+    <div class="error-item error-leve">
+      <div class="error-title">🟡 Button não expõe prop para customizar cor do texto</div>
+      <div class="error-meta">src/components/button/index.ios.tsx</div>
+      <div class="error-body">O título do botão está sempre em <code>'#fff'</code>. Impossível criar um botão com texto escuro (ex: botão em fundo amarelo) sem modificar o componente.</div>
+    </div>
+
+    <div class="error-item error-leve">
+      <div class="error-title">🟡 StatCard sem arquivo types.ts separado</div>
+      <div class="error-meta">src/components/stat-card/index.tsx</div>
+      <div class="error-body">Todos os outros componentes têm <code>types.ts</code> separado. StatCard define <code>StatCardProps</code> inline no próprio index.tsx — inconsistência com o padrão adotado.</div>
+    </div>
+
+  </div>
+
+  <!-- ===================== ETAPA 8 ===================== -->
+  <div class="section" id="etapa8">
+    <div class="section-badge"><span class="section-num">ETAPA 08</span><span class="section-title">Plano de Melhorias</span></div>
+
+    <div style="font-size:12px;font-weight:800;color:var(--accent);letter-spacing:2px;margin-bottom:16px;">OBRIGATÓRIAS ANTES DA APRESENTAÇÃO</div>
+
+    <div class="card" style="margin-bottom:0;">
+      <div class="priority-item">
+        <div class="priority-num priority-num-red">1</div>
+        <div class="priority-content">
+          <div class="priority-title">Corrigir o botão SALVAR no Perfil</div>
+          <div class="priority-desc">Chamar <code>updateStats()</code> ou o endpoint correto ao clicar em SALVAR. Adicionar feedback visual (loading + alert de sucesso/erro). Corrigir em profile.tsx E profile.web.tsx.</div>
+          <div class="priority-gain">Ganho: feature funcional. Um professor que testar o app vai notar imediatamente que salvar não funciona.</div>
+        </div>
+      </div>
+      <div class="priority-item">
+        <div class="priority-num priority-num-red">2</div>
+        <div class="priority-content">
+          <div class="priority-title">Extrair lógica de negócio para custom hooks</div>
+          <div class="priority-desc">Criar <code>src/hooks/useAlert.ts</code> e eliminar a duplicação do padrão alert em 4 telas. Criar <code>useProfileData.ts</code> para eliminar duplicação entre profile.tsx e profile.web.tsx. Criar <code>useLoginForm.ts</code>.</div>
+          <div class="priority-gain">Ganho: elimina a maior causa de DRY violation do projeto. Demonstra maturidade arquitetural ao avaliador.</div>
+        </div>
+      </div>
+      <div class="priority-item">
+        <div class="priority-num priority-num-red">3</div>
+        <div class="priority-content">
+          <div class="priority-title">Remover ou usar o componente Icon</div>
+          <div class="priority-desc">Ou deletar <code>src/components/icon/</code>, ou refatorar o NavBar para usar o Icon nos ícones SVG. Um componente criado e nunca usado é código morto — o professor vai perguntar sobre isso.</div>
+          <div class="priority-gain">Ganho: coerência no design system. Demonstra atenção ao código.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;font-weight:800;color:var(--orange);letter-spacing:2px;margin:24px 0 16px;">RECOMENDADAS</div>
+
+    <div class="card" style="margin-bottom:0;">
+      <div class="priority-item">
+        <div class="priority-num priority-num-orange">4</div>
+        <div class="priority-content">
+          <div class="priority-title">Criar componente PageHeader</div>
+          <div class="priority-desc">Extrair o header com logo Pokémon (fundo #12122A, borda inferior, logo centralizado) para um componente reutilizável. Usado em Dashboard e Profile. Aceitar slot opcional para elemento direito (ex: contador de capturados).</div>
+          <div class="priority-gain">Ganho: elimina duplicação visual, facilita mudança futura do header.</div>
+        </div>
+      </div>
+      <div class="priority-item">
+        <div class="priority-num priority-num-orange">5</div>
+        <div class="priority-content">
+          <div class="priority-title">Adotar o sistema de cores em todo o projeto</div>
+          <div class="priority-desc">Adicionar as cores do tema escuro ao <code>colors.ts</code> (<code>Colors.bg</code>, <code>Colors.surface</code>, <code>Colors.border</code>, <code>Colors.accent</code>) e substituir as strings hex hardcoded nas telas e componentes.</div>
+          <div class="priority-gain">Ganho: mudança de cor global em um lugar. Demonstra pensamento de design system.</div>
+        </div>
+      </div>
+      <div class="priority-item">
+        <div class="priority-num priority-num-orange">6</div>
+        <div class="priority-content">
+          <div class="priority-title">Adicionar Authorization header nas requisições</div>
+          <div class="priority-desc">Criar interceptor Axios que adicione <code>Authorization: Bearer token</code> nas requisições para a API própria. O token já está disponível no AuthContext e AsyncStorage.</div>
+          <div class="priority-gain">Ganho: segurança real da API. Se o professor testar com ferramentas de rede, vai notar a ausência do token.</div>
+        </div>
+      </div>
+      <div class="priority-item">
+        <div class="priority-num priority-num-orange">7</div>
+        <div class="priority-content">
+          <div class="priority-title">Tipar os <code>any</code> em pokemonIntegration</div>
+          <div class="priority-desc">Criar interfaces para os tipos de resposta da PokeAPI (<code>PokeApiType</code>, <code>PokeApiStat</code>) e remover os dois <code>any</code> no mapeamento. O projeto usa TypeScript strict — aproveitar o benefício.</div>
+          <div class="priority-gain">Ganho: type safety completa na integração com API externa.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;font-weight:800;color:var(--muted);letter-spacing:2px;margin:24px 0 16px;">OPCIONAIS</div>
+
+    <div class="card" style="margin-bottom:0;">
+      <div class="priority-item">
+        <div class="priority-num priority-num-gray">8</div>
+        <div class="priority-content">
+          <div class="priority-title">Substituir URL hardcoded do PokemonMascot</div>
+          <div class="priority-desc">Importar Pikachu como asset local ou passar o pokémon ID como prop. Torna o componente genuinamente reutilizável e resiliente a falhas de CDN.</div>
+          <div class="priority-gain">Ganho: resiliência + reusabilidade real do componente.</div>
+        </div>
+      </div>
+      <div class="priority-item">
+        <div class="priority-num priority-num-gray">9</div>
+        <div class="priority-content">
+          <div class="priority-title">Remover react-native-reanimated do package.json</div>
+          <div class="priority-desc">A biblioteca está instalada mas não usada. Remover reduz o bundle e o tempo de instalação.</div>
+          <div class="priority-gain">Ganho: bundle menor, menos dependências desnecessárias.</div>
+        </div>
+      </div>
+      <div class="priority-item">
+        <div class="priority-num priority-num-gray">10</div>
+        <div class="priority-content">
+          <div class="priority-title">Criar pasta src/utils/ para funções utilitárias</div>
+          <div class="priority-desc">Mover <code>toNumericId</code> (definida inline em team.tsx) e outras funções auxiliares para <code>src/utils/pokemonUtils.ts</code>. Pequeno, mas demonstra organização.</div>
+          <div class="priority-gain">Ganho: demonstra separação de concerns e organização profissional.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===================== ETAPA 9 ===================== -->
+  <div class="section" id="etapa9">
+    <div class="section-badge"><span class="section-num">ETAPA 09</span><span class="section-title">Nota Final</span></div>
+
+    <div class="final-grid">
+      <div class="final-item">
+        <div class="final-item-label">Arquitetura</div>
+        <div class="final-item-score score-avg">6.0</div>
+      </div>
+      <div class="final-item">
+        <div class="final-item-label">Componentização</div>
+        <div class="final-item-score score-avg">6.5</div>
+      </div>
+      <div class="final-item">
+        <div class="final-item-label">Organização</div>
+        <div class="final-item-score score-good">7.0</div>
+      </div>
+      <div class="final-item">
+        <div class="final-item-label">UX / UI</div>
+        <div class="final-item-score score-good">7.5</div>
+      </div>
+      <div class="final-item">
+        <div class="final-item-label">Reutilização</div>
+        <div class="final-item-score score-poor">4.5</div>
+      </div>
+      <div class="final-item">
+        <div class="final-item-label">Qualidade do Código</div>
+        <div class="final-item-score score-avg">5.5</div>
+      </div>
+      <div class="final-item">
+        <div class="final-item-label">Estrutura de Pastas</div>
+        <div class="final-item-score score-good">7.0</div>
+      </div>
+      <div class="final-item">
+        <div class="final-item-label">Escalabilidade</div>
+        <div class="final-item-score score-avg">5.5</div>
+      </div>
+    </div>
+
+    <div class="avg-box">
+      <div class="avg-label">MÉDIA GERAL</div>
+      <div class="avg-score">6.2</div>
+      <div class="avg-verdict">Projeto com visual acima da média e conceitos avançados (multi-plataforma, Context, platform-specific), mas com falhas arquiteturais significativas — especialmente duplicação de código e feature incompleta no perfil.</div>
+    </div>
+
+  </div>
+
+  <!-- ===================== ETAPA 10 ===================== -->
+  <div class="section" id="etapa10">
+    <div class="section-badge"><span class="section-num">ETAPA 10</span><span class="section-title">Simulação da Correção do Professor</span></div>
+
+    <div class="card" style="margin-bottom:24px;border-left:3px solid var(--muted);">
+      <div style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:8px;">"Se eu fosse o professor, estes seriam os comentários durante a avaliação:"</div>
+    </div>
+
+    <div class="professor-box">
+
+      <div class="professor-comment">
+        <div class="icon">👁️</div>
+        <div>
+          <strong>[Primeiro olhar — estrutura de pastas]</strong><br>
+          <span style="color:#C0C0D8;">
+          "Boa, estrutura inicial organizada. Vejo <code>components/</code>, <code>context/</code>, <code>integration/</code>, <code>constants/</code> — está seguindo uma separação razoável de responsabilidades. O uso de expo-router com grupos <code>(auth)</code> e <code>(app)</code> está correto e segue a convenção... <em>[pausa]</em>... espera, tem <code>index.tsx</code> E <code>index.web.tsx</code> no login? Vou abrir os dois lado a lado."
+          </span>
+        </div>
+      </div>
+
+      <div class="professor-comment">
+        <div class="icon">😤</div>
+        <div>
+          <strong>[Abrindo index.tsx e index.web.tsx lado a lado]</strong><br>
+          <span style="color:#C0C0D8;">
+          "Isso aqui é a mesma lógica copiada duas vezes. <code>handleLogin</code> — idêntico. Os estados — idênticos. O JSX — praticamente idêntico, só mudou o tamanho da pokéball e o container externo. Isso é uma violação clássica do DRY que vocês viram nas aulas. Por que não extraíram essa lógica para um hook customizado? Teria um <code>useLoginForm</code> e os dois arquivos usariam o hook, cada um com seu próprio layout. A mesma coisa acontece no register e no profile — vou verificar."
+          </span>
+        </div>
+      </div>
+
+      <div class="professor-comment">
+        <div class="icon">📱</div>
+        <div>
+          <strong>[Testando o app — tela de perfil]</strong><br>
+          <span style="color:#C0C0D8;">
+          "Ok, consigo ver o nível, vitórias e derrotas. Vou clicar em EDITAR... posso digitar um novo nome... vou clicar em SALVAR... <em>[espera]</em>... recarreguei o app e o nome voltou para o original. O botão SALVAR não persiste nada. Onde está a chamada para <code>updateStats</code>? <em>[abre o código]</em>... O onPress do SALVAR chama <code>setEditMode(false)</code> e nada mais. A função <code>updateStats</code> existe no integration, está exportada, mas nunca é chamada. Isso é uma feature incompleta entregue."
+          </span>
+        </div>
+      </div>
+
+      <div class="professor-comment">
+        <div class="icon">🔍</div>
+        <div>
+          <strong>[Revisando os componentes]</strong><br>
+          <span style="color:#C0C0D8;">
+          "Bom, os componentes... Alert tem implementação para iOS, Android e Web — isso está muito bem feito, demonstra conhecimento real de React Native multi-plataforma. Button também. NavBar igual. Isso é positivo. <em>[abre icon/index.tsx]</em> Mas esse componente Icon aqui — onde ele é usado? <em>[busca no projeto]</em>... Em lugar nenhum. O NavBar define os ícones inline em vez de usar o componente que foi criado para isso. Tem um componente no projeto que não serve a propósito algum."
+          </span>
+        </div>
+      </div>
+
+      <div class="professor-comment">
+        <div class="icon">📊</div>
+        <div>
+          <strong>[Olhando para o sistema de cores]</strong><br>
+          <span style="color:#C0C0D8;">
+          "Tem um arquivo <code>constants/colors.ts</code> bem estruturado. <em>[abre dashboard.tsx]</em>... mas aqui no dashboard está <code>'#E53935'</code>, <code>'#0D0D1F'</code>, <code>'#12122A'</code>. <em>[abre profile.tsx]</em>... mesmo aqui. Vocês criaram um design system e não o usaram nas telas principais. O Colors é usado só em dois componentes. Para que serve ter um arquivo de constantes se ninguém as importa?"
+          </span>
+        </div>
+      </div>
+
+      <div class="professor-comment">
+        <div class="icon">✅</div>
+        <div>
+          <strong>[Pontos positivos que seriam mencionados]</strong><br>
+          <span style="color:#C0C0D8;">
+          "A parte do AuthContext está bem feita — persistência, cleanup no signOut, proteção de rota, carregamento inicial. A abordagem platform-specific para componentes é avançada e correta. A tela de Time com o sistema de swap está bem implementada — o <code>useFocusEffect</code>, o cleanup com flag <code>active</code>, a lógica de troca. O visual do app é atraente e consistente. O sistema de cores por tipo de pokémon é uma boa ideia bem executada."
+          </span>
+        </div>
+      </div>
+
+      <div class="professor-comment" style="border-bottom:none;">
+        <div class="icon">📝</div>
+        <div>
+          <strong>[Avaliação final do professor]</strong><br>
+          <span style="color:#C0C0D8;">
+          "O projeto demonstra que a equipe entendeu React Native e Expo além do básico. A interface está polida, o multi-plataforma foi tratado com seriedade, e a arquitetura geral não é ruim. Porém há problemas que não posso ignorar: uma feature incompleta (botão SALVAR que não salva), violação sistemática do DRY com três pares de arquivos duplicados, e ausência de custom hooks para lógica repetida em 4 telas. Em uma entrega profissional, esses seriam comentários do code review que impediriam o merge. Nota: <strong>6.2/10</strong>. Para chegar em 8+, corrija as duplicações, extraia os hooks, e termine o botão SALVAR."
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:32px;padding:20px 24px;background:rgba(46,204,113,0.06);border:1px solid rgba(46,204,113,0.2);border-radius:12px;">
+      <div style="font-size:12px;font-weight:800;color:var(--green);letter-spacing:2px;margin-bottom:12px;">RESUMO EXECUTIVO</div>
+      <div style="font-size:14px;color:#C0C0D8;line-height:1.8;">
+        O projeto tem <strong>fundações sólidas</strong> — expo-router correto, AuthContext bem feito, componentes platform-specific que demonstram conhecimento real de React Native. A UI é visualmente consistente e profissional. O que arrasta a nota para baixo é a <strong>duplicação de código</strong> (3 pares de telas mobile/web copiadas), a <strong>ausência de custom hooks</strong> (padrão de alert repetido 4 vezes), e principalmente <strong>uma feature que não funciona</strong> (perfil não salva). Corrija essas 3 categorias de problemas e o projeto vai de 6.2 para 8.0+.
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<div style="text-align:center;padding:32px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);margin-top:60px;">
+  Auditoria realizada por Arquiteto de Software Sênior via Claude Code &nbsp;·&nbsp; Projeto: Pokédex React Native / FATEC 2026
+</div>
+
+</body>
+</html>

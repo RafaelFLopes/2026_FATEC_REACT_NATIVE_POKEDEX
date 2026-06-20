@@ -2,7 +2,73 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { getColor } from '@/constants/colors';
 import { TeamSlotProps } from './types';
 
-export default function TeamSlotAndroid({ pokemon, onRemove, swapMode }: TeamSlotProps) {
+function TypeBadge({ type }: { type: string }) {
+    const { accent } = getColor([type]);
+    return (
+        <View style={[expandedStyles.typeBadge, { backgroundColor: accent + '22', borderColor: accent + '55' }]}>
+            <Text style={[expandedStyles.typeBadgeText, { color: accent }]}>
+                {type.toUpperCase()}
+            </Text>
+        </View>
+    );
+}
+
+export default function TeamSlotAndroid({ pokemon, onRemove, swapMode, variant = 'compact' }: TeamSlotProps) {
+
+    // ─── EXPANDED (carrossel) ────────────────────────────────────────────
+    if (variant === 'expanded') {
+        if (!pokemon) {
+            return (
+                <View style={[expandedStyles.slot, expandedStyles.slotEmpty]}>
+                    <Text style={expandedStyles.emptyMark}>?</Text>
+                    <Text style={expandedStyles.emptyLabel}>Slot vazio</Text>
+                </View>
+            );
+        }
+
+        const colors = getColor(pokemon.tipos);
+        const isSwappable = swapMode && onRemove;
+
+        const expandedInner = (
+            <>
+                <View style={[expandedStyles.wash, { backgroundColor: colors.bg }]} />
+                <Image
+                    source={{ uri: pokemon.imagem }}
+                    style={expandedStyles.image}
+                    resizeMode="contain"
+                />
+                <Text style={expandedStyles.name} numberOfLines={1}>
+                    {pokemon.nome.toUpperCase()}
+                </Text>
+                <View style={expandedStyles.typesRow}>
+                    {pokemon.tipos.map(t => <TypeBadge key={t} type={t} />)}
+                </View>
+                {isSwappable && (
+                    <Text style={[expandedStyles.swapIcon, { color: '#E15610' }]}>⟳ Toque para substituir</Text>
+                )}
+            </>
+        );
+
+        if (isSwappable) {
+            return (
+                <TouchableOpacity
+                    onPress={onRemove}
+                    activeOpacity={0.7}
+                    style={[expandedStyles.slot, expandedStyles.slotFilled, { borderColor: '#E15610' }]}
+                >
+                    {expandedInner}
+                </TouchableOpacity>
+            );
+        }
+
+        return (
+            <View style={[expandedStyles.slot, expandedStyles.slotFilled, { borderColor: colors.accent + '99' }]}>
+                {expandedInner}
+            </View>
+        );
+    }
+
+    // ─── COMPACT (fileira — comportamento original) ──────────────────────
     if (!pokemon) {
         return (
             <View style={[styles.slot, styles.slotEmpty]}>
@@ -50,6 +116,7 @@ export default function TeamSlotAndroid({ pokemon, onRemove, swapMode }: TeamSlo
     );
 }
 
+// ─── compact styles ───────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
     slot: {
         flex: 1,
@@ -98,5 +165,82 @@ const styles = StyleSheet.create({
         color: '#3A3A5A',
         fontSize: 22,
         fontWeight: '900',
+    },
+});
+
+// ─── expanded styles (carrossel) ─────────────────────────────────────────────
+const expandedStyles = StyleSheet.create({
+    slot: {
+        alignSelf: 'stretch',
+        borderRadius: 14,
+        borderWidth: 1.5,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 24,
+        paddingHorizontal: 16,
+        overflow: 'hidden',
+        position: 'relative',
+        minHeight: 190,
+        gap: 8,
+    },
+    slotFilled: {
+        backgroundColor: '#12122A',
+    },
+    slotEmpty: {
+        borderColor: '#1E1E45',
+        borderStyle: 'dashed',
+        backgroundColor: 'rgba(255,255,255,0.02)',
+        gap: 6,
+    },
+    wash: {
+        ...StyleSheet.absoluteFillObject,
+        opacity: 0.18,
+        borderRadius: 14,
+    },
+    image: {
+        width: 96,
+        height: 96,
+    },
+    name: {
+        color: '#FFFFFF',
+        fontSize: 14,
+        fontWeight: '900',
+        letterSpacing: 1,
+        textAlign: 'center',
+    },
+    typesRow: {
+        flexDirection: 'row',
+        gap: 6,
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+    },
+    typeBadge: {
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        borderRadius: 999,
+        borderWidth: 1,
+    },
+    typeBadgeText: {
+        fontSize: 9,
+        fontWeight: '800',
+        letterSpacing: 0.8,
+    },
+    swapIcon: {
+        fontSize: 12,
+        fontWeight: '900',
+        opacity: 0.9,
+        marginTop: 4,
+        letterSpacing: 0.5,
+    },
+    emptyMark: {
+        color: '#3A3A5A',
+        fontSize: 40,
+        fontWeight: '900',
+    },
+    emptyLabel: {
+        color: '#3A3A5A',
+        fontSize: 12,
+        fontWeight: '700',
+        letterSpacing: 1,
     },
 });

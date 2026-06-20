@@ -4,4 +4,5 @@ export interface TeamSlotProps {
     pokemon?: Pokemon;
     onRemove?: () => void;
     swapMode?: boolean;
+    variant?: 'compact' | 'expanded';
 }

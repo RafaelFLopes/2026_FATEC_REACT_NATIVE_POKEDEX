@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { PokemonList } from '@/components/pokemon-list';
-import { TeamSlot } from '@/components/team-slot';
+import { TeamSlotsSection } from '@/components/team-slots-section';
 import { Alert } from '@/components/alert';
 import { getTeam, updateTeam } from '@/integration/teamIntegration';
 import { useAuth } from '@/context/AuthContext';
@@ -127,19 +127,12 @@ export default function Team() {
             )}
 
             <View style={styles.teamSection}>
-                <View style={styles.slotsRow}>
-                    {Array.from({ length: MAX_TEAM }).map((_, i) => {
-                        const slotPokemon = team[i] ?? undefined;
-                        return (
-                            <TeamSlot
-                                key={slotPokemon?.index ?? `empty-${i}`}
-                                pokemon={slotPokemon}
-                                onRemove={slotPokemon && selectedCapture ? () => handleSlotSwap(slotPokemon) : undefined}
-                                swapMode={!!selectedCapture}
-                            />
-                        );
-                    })}
-                </View>
+                <TeamSlotsSection
+                    team={team}
+                    swapMode={!!selectedCapture}
+                    onSlotSwap={handleSlotSwap}
+                    maxTeam={MAX_TEAM}
+                />
             </View>
 
             <View style={styles.sectionLabel}>
@@ -246,11 +239,6 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#1E1E45',
     },
-    slotsRow: {
-        flexDirection: 'row',
-        gap: 8,
-    },
-
     sectionLabel: {
         paddingHorizontal: 16,
         paddingVertical: 10,
