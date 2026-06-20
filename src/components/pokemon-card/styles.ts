@@ -31,8 +31,8 @@ export const styles = StyleSheet.create({
         paddingBottom: 10,
     },
     imageWrap: {
-        width: 88,
-        height: 88,
+        width: 100,
+        height: 100,
         borderRadius: 12,
         borderWidth: 1,
         alignItems: 'center',
@@ -40,8 +40,8 @@ export const styles = StyleSheet.create({
         flexShrink: 0,
     },
     image: {
-        width: 88,
-        height: 88,
+        width: 140,
+        height: 140,
     },
     headerInfo: {
         flex: 1,
