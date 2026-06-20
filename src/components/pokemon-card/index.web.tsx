@@ -35,9 +35,6 @@ export default function PokemonCardWeb({ pokemon, onPress, selected, onCapture, 
                         <Text style={styles.pokemonName} numberOfLines={1}>
                             {pokemon.nome.toUpperCase()}
                         </Text>
-                        <Text style={[styles.pokemonIndex, { color: colors.accent }]}>
-                            #{pokemon.index}
-                        </Text>
                     </View>
 
                     <View style={styles.typesRow}>
@@ -54,6 +51,9 @@ export default function PokemonCardWeb({ pokemon, onPress, selected, onCapture, 
                                 </View>
                             );
                         })}
+                        <Text style={[styles.pokemonIndex, { color: colors.accent, marginLeft: 'auto' }]}>
+                            #{pokemon.index}
+                        </Text>
                     </View>
                 </View>
             </View>

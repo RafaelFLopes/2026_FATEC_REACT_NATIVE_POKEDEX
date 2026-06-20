@@ -31,8 +31,8 @@ export const styles = StyleSheet.create({
         paddingBottom: 10,
     },
     imageWrap: {
-        width: 58,
-        height: 58,
+        width: 88,
+        height: 88,
         borderRadius: 12,
         borderWidth: 1,
         alignItems: 'center',
@@ -40,8 +40,8 @@ export const styles = StyleSheet.create({
         flexShrink: 0,
     },
     image: {
-        width: 50,
-        height: 50,
+        width: 88,
+        height: 88,
     },
     headerInfo: {
         flex: 1,
@@ -50,8 +50,6 @@ export const styles = StyleSheet.create({
     nameRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 8,
     },
     pokemonName: {
         color: Colors.white,
@@ -68,6 +66,7 @@ export const styles = StyleSheet.create({
     },
     typesRow: {
         flexDirection: 'row',
+        alignItems: 'center',
         gap: 6,
         flexWrap: 'wrap',
     },
