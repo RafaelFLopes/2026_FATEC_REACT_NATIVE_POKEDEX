@@ -234,7 +234,6 @@ const styles = StyleSheet.create({
 
     teamSection: {
         backgroundColor: '#12122A',
-        paddingHorizontal: 12,
         paddingVertical: 14,
         borderBottomWidth: 1,
         borderBottomColor: '#1E1E45',

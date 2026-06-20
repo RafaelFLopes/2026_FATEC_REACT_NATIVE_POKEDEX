@@ -61,7 +61,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 6,
         overflow: 'hidden',
         position: 'relative',
-        minHeight: 90,
+        aspectRatio: 1,
+        margin: 8,
     },
     slotFilled: {
         backgroundColor: '#12122A',
@@ -77,16 +78,15 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     image: {
-        width: 52,
-        height: 52,
+        width: 100,
+        height: 100,
     },
     name: {
         color: '#FFFFFF',
-        fontSize: 8,
+        fontSize: 10,
         fontWeight: '800',
         letterSpacing: 0.5,
         textAlign: 'center',
-        marginTop: 4,
     },
     remove: {
         fontSize: 9,
