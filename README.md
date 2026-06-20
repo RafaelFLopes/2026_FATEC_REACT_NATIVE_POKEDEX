@@ -1,6 +1,10 @@
-# Pokédex App
+<p align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Press+Start+2P&size=24&pause=1000&color=E3350D&center=true&vCenter=true&width=800&lines=Pok%C3%A9dex+App" />
+</p>
 
-Aplicativo Pokédex desenvolvido com React Native e Expo, com suporte a Android, iOS e Web.
+<p align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Press+Start+2P&size=12&duration=1&pause=999999&color=FFFFFF&center=true&vCenter=true&width=1200&lines=Aplicativo+Pok%C3%A9dex+desenvolvido+com+React+Native+e+Expo%2C+com+suporte+a+Android%2C+iOS+e+Web." />
+</p>
 
 ## Tecnologias
 
@@ -76,27 +80,70 @@ npm run ios
 npm run web
 ```
 
-## Credenciais de acesso
 
-| Usuário | Senha |
-|---|---|
-| rafael | 1234 |
-| jovana | 1234 |
+## Capturas de Tela - WEB 
 
-## Screenshots
+<table>
+  <tr>
+    <td align="center">
+      <h3>Tela Inicial Login</h3>
+      <img src="https://github.com/user-attachments/assets/4081580a-9565-440c-b2d4-9aa3a1ae6319" width="1200">
+    </td>
+  </tr>
 
-### Android
+  <tr>
+    <td align="center">
+      <h3>Cadastro</h3>
+      <img src="https://github.com/user-attachments/assets/931dc27b-9a3e-4fa8-88e0-2122161b7491" width="1200">
+    </td>
+  </tr>
 
-| Login | Dashboard |
-|:---:|:---:|
-| ![Login Android](image-3.png) | ![Dashboard Android](image-2.png) |
+  <tr>
+    <td align="center">
+      <h3>Pokédex</h3>
+      <img src="https://github.com/user-attachments/assets/4053f752-9975-4a95-a6ef-85b8bf915ef7" width="1200">
+    </td>
+  </tr>
 
-### Web
+  <tr>
+    <td align="center">
+      <h3>Meu Time</h3>
+      <img src="https://github.com/user-attachments/assets/1694f89d-ca4e-4436-9102-b97dac53d02f" width="1200">
+    </td>
+  </tr>
 
-**Login**
+  <tr>
+    <td align="center">
+      <h3>Perfil</h3>
+      <img src="https://github.com/user-attachments/assets/e02d3f5b-8de5-4c28-b955-7175aa049943" width="1200">
+    </td>
+  </tr>
+</table>
 
-<img src="image-1.png" width="600"/>
 
-**Dashboard**
+## Capturas de Tela - MOBILE
 
-<img src="image.png" width="600"/>
+<table>
+  <tr>
+    <td align="center">
+      <strong>Perfil</strong><br><br>
+      <img src="https://github.com/user-attachments/assets/22b16c67-6246-47b2-ad91-a7a6dba5bebe" width="280">
+    </td>
+    <td align="center">
+      <strong>Meu Time</strong><br><br>
+      <img src="https://github.com/user-attachments/assets/fb5f1d9b-0819-4e61-9170-71bd29d96121" width="280">
+    </td>
+  </tr>
+
+  <tr>
+    <td align="center">
+      <strong>Perfil (Detalhes)</strong><br><br>
+      <img src="https://github.com/user-attachments/assets/31132b02-01e2-45ee-928c-8d0ac89211c0" width="280">
+    </td>
+    <td align="center">
+      <strong>Pokédex</strong><br><br>
+      <img src="https://github.com/user-attachments/assets/27670d8c-ffb9-449e-8c9a-152d79218a91" width="280">
+    </td>
+  </tr>
+</table>
+
