@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { View, Image, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import { Card } from '@/components/card';
-import { Input } from '@/components/input';
+import { Pokeball } from '@/components/pokeball';
 import { Button } from '@/components/button';
 import { StatCard } from '@/components/stat-card';
 import { useAuth } from '@/context/AuthContext';
@@ -9,12 +9,10 @@ import { getStats } from '@/integration/authIntegration';
 
 export default function ProfileWeb() {
     const { user, userId, signOut } = useAuth();
-    const [name, setName] = useState(user ?? '');
     const [nivel, setNivel] = useState('');
     const [vitorias, setVitorias] = useState('');
     const [derrotas, setDerrotas] = useState('');
     const [loading, setLoading] = useState(true);
-    const [editMode, setEditMode] = useState(false);
 
     useEffect(() => {
         async function loadStats() {
@@ -37,26 +35,12 @@ export default function ProfileWeb() {
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
             <Card style={styles.card}>
                 <View style={styles.avatarWrapper}>
-                    <Image
-                        source={require('@assets/images/image-login.png')}
-                        style={styles.avatar}
-                        resizeMode="cover"
-                    />
+                    <Pokeball size={80} />
                     <Text style={styles.username}>{user}</Text>
-                    <Text style={styles.userTag}>TREINADOR</Text>
+                    <Text style={styles.trainerTag}>TREINADOR</Text>
                 </View>
 
                 <View style={styles.divider} />
-
-                <Text style={styles.label}>Nome de Usuário</Text>
-                <View style={editMode ? undefined : styles.inputDisabled}>
-                    <Input
-                        placeholder="Seu nome"
-                        value={name}
-                        onChangeText={setName}
-                        editable={editMode}
-                    />
-                </View>
 
                 <Text style={styles.sectionTitle}>ESTATÍSTICAS</Text>
 
@@ -70,31 +54,9 @@ export default function ProfileWeb() {
                     </View>
                 )}
 
-                <View style={styles.actionsRow}>
-                    {editMode ? (
-                        <>
-                            <View style={styles.btnWrapper}>
-                                <Button title="SALVAR" onPress={() => setEditMode(false)} style={styles.btnSave} />
-                            </View>
-                            <View style={styles.btnWrapper}>
-                                <Button
-                                    title="CANCELAR"
-                                    onPress={() => { setName(user ?? ''); setEditMode(false); }}
-                                    style={styles.btnCancel}
-                                />
-                            </View>
-                        </>
-                    ) : (
-                        <>
-                            <View style={styles.btnWrapper}>
-                                <Button title="EDITAR PERFIL" onPress={() => setEditMode(true)} style={styles.btnEdit} />
-                            </View>
-                            <View style={styles.btnWrapper}>
-                                <Button title="SAIR" onPress={signOut} style={styles.btnLogout} />
-                            </View>
-                        </>
-                    )}
-                </View>
+                <View style={styles.divider} />
+
+                <Button title="SAIR" onPress={signOut} style={styles.btnLogout} />
             </Card>
         </ScrollView>
     );
@@ -111,88 +73,41 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 32,
     },
-
     card: {
         width: '100%',
         maxWidth: 520,
     },
-
     avatarWrapper: {
         alignItems: 'center',
-        gap: 6,
+        gap: 8,
     },
-
-    avatar: {
-        width: 110,
-        height: 110,
-        borderRadius: 55,
-        borderWidth: 3,
-        borderColor: '#E53935',
-        backgroundColor: '#FFF',
-    },
-
     username: {
         color: '#FFFFFF',
-        fontSize: 20,
+        fontSize: 22,
         fontWeight: '800',
         letterSpacing: 1,
     },
-
-    userTag: {
+    trainerTag: {
         color: '#E53935',
         fontSize: 10,
         fontWeight: '700',
         letterSpacing: 3,
     },
-
     divider: {
         height: 1,
         backgroundColor: '#1E1E45',
     },
-
-    label: {
-        color: '#9090B0',
-        fontSize: 12,
-        fontWeight: '700',
-        letterSpacing: 1,
-        marginBottom: -6,
-    },
-
-    inputDisabled: {
-        opacity: 0.45,
-    },
-
     sectionTitle: {
         color: '#9090B0',
         fontSize: 10,
         fontWeight: '800',
         letterSpacing: 2,
     },
-
     statsRow: {
         flexDirection: 'row',
         gap: 8,
     },
-
-    actionsRow: {
-        flexDirection: 'row',
-        gap: 8,
-        marginTop: 4,
-    },
-    btnWrapper: {
-        flex: 1,
-    },
-
-    btnEdit: {
-        backgroundColor: '#1E1E45',
-    },
     btnLogout: {
         backgroundColor: '#E53935',
-    },
-    btnSave: {
-        backgroundColor: '#2ECC71',
-    },
-    btnCancel: {
-        backgroundColor: '#1E1E45',
     },
 });
