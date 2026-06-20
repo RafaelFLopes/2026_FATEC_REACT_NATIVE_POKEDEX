@@ -4,6 +4,7 @@ import { Card } from '@/components/card';
 import { Pokeball } from '@/components/pokeball';
 import { Button } from '@/components/button';
 import { StatCard } from '@/components/stat-card';
+import { ScreenHeader } from '@/components/screen-header';
 import { useAuth } from '@/context/AuthContext';
 import { getStats } from '@/integration/authIntegration';
 
@@ -32,33 +33,36 @@ export default function ProfileWeb() {
     }, [userId]);
 
     return (
-        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-            <Card style={styles.card}>
-                <View style={styles.avatarWrapper}>
-                    <Pokeball size={80} />
-                    <Text style={styles.username}>{user}</Text>
-                    <Text style={styles.trainerTag}>TREINADOR</Text>
-                </View>
-
-                <View style={styles.divider} />
-
-                <Text style={styles.sectionTitle}>ESTATÍSTICAS</Text>
-
-                {loading ? (
-                    <ActivityIndicator size="small" color="#E53935" />
-                ) : (
-                    <View style={styles.statsRow}>
-                        <StatCard value={nivel} label="Nível" color="#F1C40F" />
-                        <StatCard value={vitorias} label="Vitórias" color="#2ECC71" />
-                        <StatCard value={derrotas} label="Derrotas" color="#E53935" />
+        <View style={styles.container}>
+            <ScreenHeader />
+            <ScrollView contentContainerStyle={styles.content}>
+                <Card style={styles.card}>
+                    <View style={styles.avatarWrapper}>
+                        <Pokeball size={80} />
+                        <Text style={styles.username}>{user}</Text>
+                        <Text style={styles.trainerTag}>TREINADOR</Text>
                     </View>
-                )}
 
-                <View style={styles.divider} />
+                    <View style={styles.divider} />
 
-                <Button title="SAIR" onPress={signOut} style={styles.btnLogout} />
-            </Card>
-        </ScrollView>
+                    <Text style={styles.sectionTitle}>ESTATÍSTICAS</Text>
+
+                    {loading ? (
+                        <ActivityIndicator size="small" color="#E53935" />
+                    ) : (
+                        <View style={styles.statsRow}>
+                            <StatCard value={nivel} label="Nível" color="#F1C40F" />
+                            <StatCard value={vitorias} label="Vitórias" color="#2ECC71" />
+                            <StatCard value={derrotas} label="Derrotas" color="#E53935" />
+                        </View>
+                    )}
+
+                    <View style={styles.divider} />
+
+                    <Button title="SAIR" onPress={signOut} style={styles.btnLogout} />
+                </Card>
+            </ScrollView>
+        </View>
     );
 }
 

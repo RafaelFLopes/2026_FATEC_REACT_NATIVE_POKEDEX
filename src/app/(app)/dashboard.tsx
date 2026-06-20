@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { View, Image, StyleSheet, ActivityIndicator, Text } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import { PokemonList } from '@/components/pokemon-list';
 import { Alert } from '@/components/alert';
+import { ScreenHeader } from '@/components/screen-header';
 import { getPokemons } from '@/integration/pokemonIntegration';
 import { addCaptured, getTeam } from '@/integration/teamIntegration';
 import { useAuth } from '@/context/AuthContext';
@@ -59,18 +60,7 @@ export default function Dashboard() {
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <Image
-                    source={require('@assets/images/logo-pokemon.png')}
-                    style={styles.logo}
-                    resizeMode="contain"
-                />
-                {userId && (
-                    <Text style={styles.capturedCount}>
-                        {capturedIds.length} capturados
-                    </Text>
-                )}
-            </View>
+            <ScreenHeader capturedCount={userId ? capturedIds.length : undefined} />
 
             {loading ? (
                 <View style={styles.loadingContainer}>
@@ -100,32 +90,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#0D0D1F',
-    },
-
-    header: {
-        paddingHorizontal: 16,
-        paddingTop: 24,
-        paddingBottom: 16,
-        backgroundColor: '#12122A',
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: '#1E1E45',
-        flexDirection: 'row',
-        justifyContent: 'center',
-    },
-
-    logo: {
-        width: 180,
-        height: 60,
-    },
-
-    capturedCount: {
-        position: 'absolute',
-        right: 16,
-        color: '#2ECC71',
-        fontSize: 11,
-        fontWeight: '800',
-        letterSpacing: 1,
     },
 
     loadingContainer: {

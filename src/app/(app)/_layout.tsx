@@ -1,5 +1,6 @@
 import { Tabs, Redirect } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "@/context/AuthContext";
 import { NavBar } from "@/components/nav-bar";
 
@@ -19,9 +20,11 @@ export default function AppLayout() {
     }
 
     return (
-        <Tabs
-            tabBar={(props) => <NavBar {...props} />}
-            screenOptions={{ headerShown: false }}
-        />
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#12122A' }} edges={['top']}>
+            <Tabs
+                tabBar={(props) => <NavBar {...props} />}
+                screenOptions={{ headerShown: false }}
+            />
+        </SafeAreaView>
     );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { View, Image, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import { Button } from '@/components/button';
+import { ScreenHeader } from '@/components/screen-header';
 import { SpinningPokeball } from '@/components/pokeball/spinning';
 import { useAuth } from '@/context/AuthContext';
 import { getStats } from '@/integration/authIntegration';
@@ -43,13 +44,7 @@ export default function Profile() {
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <Image
-                    source={require('@assets/images/logo-pokemon.png')}
-                    style={styles.logo}
-                    resizeMode="contain"
-                />
-            </View>
+            <ScreenHeader />
 
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.hero}>
@@ -95,19 +90,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#0D0D1F',
-    },
-    header: {
-        paddingHorizontal: 16,
-        paddingTop: 24,
-        paddingBottom: 16,
-        backgroundColor: '#12122A',
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: '#1E1E45',
-    },
-    logo: {
-        width: 160,
-        height: 48,
     },
     hero: {
         backgroundColor: '#12122A',
