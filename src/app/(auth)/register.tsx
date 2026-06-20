@@ -42,8 +42,7 @@ export default function Register() {
     setIsLoading(true);
     try {
       await signUp(name, senha);
-      showAlert('Conta criada!', 'Cadastro realizado com sucesso. Faça login para continuar.', 'success');
-      setTimeout(() => router.back(), 1800);
+      showAlert('Conta criada!', 'Bem-vindo, Treinador! Preparando sua jornada...', 'success');
     } catch (e: any) {
       showAlert('Erro no cadastro', e?.response?.data?.message ?? 'Não foi possível criar a conta.', 'error');
     } finally {

@@ -33,9 +33,9 @@ export default function Dashboard() {
                     userId ? getTeam(userId) : Promise.resolve({ team: [], capture: [] }),
                 ]);
                 setPokemons(pokemonData);
-                // backend armazena IDs numéricos ("1", "25") — normalizar para comparação
-                const ids = teamData.capture.map(p => parseInt(p.index, 10).toString());
-                setCapturedIds(ids);
+                const captureIds = teamData.capture.map(p => parseInt(p.index, 10).toString());
+                const teamIds = teamData.team.map(p => parseInt(p.index, 10).toString());
+                setCapturedIds([...new Set([...captureIds, ...teamIds])]);
             } catch (e) {
                 console.error('Erro ao carregar pokémons:', e);
             } finally {

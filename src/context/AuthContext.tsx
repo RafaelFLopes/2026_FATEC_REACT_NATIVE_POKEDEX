@@ -56,6 +56,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     async function signUp(username: string, password: string) {
         await register(username, password);
+        await signIn(username, password);
     }
 
     async function signOut() {
