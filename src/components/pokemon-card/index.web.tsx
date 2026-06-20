@@ -3,6 +3,8 @@ import { getColor } from '@/constants/colors';
 import { styles } from './styles';
 import { PokemonCardProps } from './types';
 import { Poder } from '@/@types/pokemon';
+import React, { useEffect, useRef } from 'react';
+import { Animated } from 'react-native';
 
 const STAT_ABBR: Record<string, string> = {
     hp: 'HP',
@@ -17,6 +19,46 @@ export default function PokemonCardWeb({ pokemon, onPress, selected, onCapture, 
     const colors = getColor(pokemon.tipos);
     const borderColor = selected ? colors.accent : colors.accent + '66';
 
+    const AnimatedImage = Animated.createAnimatedComponent(Image);
+
+    const floatAnim = useRef(new Animated.Value(0)).current;
+
+useEffect(() => {
+    Animated.loop(
+        Animated.sequence([
+            Animated.timing(floatAnim, {
+                toValue: -2,
+                duration: 1800,
+                useNativeDriver: true,
+            }),
+            Animated.timing(floatAnim, {
+                toValue: 0,
+                duration: 1800,
+                useNativeDriver: true,
+            }),
+        ])
+    ).start();
+}, [floatAnim]);
+
+const smokeAnim = useRef(new Animated.Value(0)).current;
+
+useEffect(() => {
+    Animated.loop(
+        Animated.sequence([
+       Animated.timing(floatAnim, {
+    toValue: -6,
+    duration: 3000,
+    useNativeDriver: true,
+}),
+Animated.timing(floatAnim, {
+    toValue: 0,
+    duration: 3000,
+    useNativeDriver: true,
+}),
+        ])
+    ).start();
+}, [smokeAnim]);
+
     const inner = (
         <>
             <View style={[styles.cardWash, { backgroundColor: colors.bg }]} />
@@ -27,8 +69,46 @@ export default function PokemonCardWeb({ pokemon, onPress, selected, onCapture, 
                     backgroundColor: colors.accent + '18',
                     borderColor: colors.accent + '45',
                 }]}>
-                    <Image source={{ uri: pokemon.imagem }} style={styles.image} resizeMode="contain" />
-                </View>
+
+<View
+    style={[
+        styles.imageWrap,
+        {
+            backgroundColor: colors.accent + '18',
+            borderColor: colors.accent + '45',
+        },
+    ]}
+>
+    <Animated.View
+        style={{
+            position: 'absolute',
+            width: 70,
+            height: 70,
+            borderRadius: 60,
+            backgroundColor: colors.accent,
+            opacity: 0.15,
+            transform: [
+                {
+                    scale: smokeAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [1, 1.4],
+                    }),
+                },
+            ],
+        }}
+    />
+
+    <AnimatedImage
+        source={{ uri: pokemon.imagem }}
+        resizeMode="contain"
+        style={{
+            ...styles.image,
+            transform: [{ translateY: floatAnim }],
+        }}
+    />
+</View>
+
+</View>
 
                 <View style={styles.headerInfo}>
                     <View style={styles.nameRow}>

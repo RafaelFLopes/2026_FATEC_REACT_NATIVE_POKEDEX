@@ -6,7 +6,7 @@ const isWeb = Platform.OS === 'web';
 export const styles = StyleSheet.create({
     card: {
         flex: 1,
-        backgroundColor: '#12122A',
+        backgroundColor: '#000000',
         borderRadius: 12,
         padding: isWeb ? 14 : 12,
         margin: isWeb ? 8 : 6,
