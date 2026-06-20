@@ -102,7 +102,7 @@ export default function Index() {
           <Button
             title="CRIAR CONTA"
             onPress={() => router.push('/register')}
-            style={styles.registerButton}
+            style={styles.loginButton}
           />
         </Card>
       </ScrollView>
@@ -197,10 +197,6 @@ const styles = StyleSheet.create({
 
   loginButton: {
     backgroundColor: '#E53935',
-    marginTop: 4,
-  },
-  registerButton: {
-    backgroundColor: '#1E1E45',
     marginTop: 4,
   },
   hint: {

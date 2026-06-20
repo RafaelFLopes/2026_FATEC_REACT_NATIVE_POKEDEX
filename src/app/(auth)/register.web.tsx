@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { router } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Button } from '@/components/button';
 import { Input } from '@/components/input';
 import { Alert } from '@/components/alert';
@@ -98,12 +98,11 @@ export default function RegisterWeb() {
             style={styles.registerButton}
           />
 
-          <Button
-            title="Já tenho conta"
-            onPress={() => router.back()}
-            style={styles.backButton}
-          />
         </Card>
+
+        <TouchableOpacity onPress={() => router.back()} style={styles.backLink}>
+          <Text style={styles.backLinkText}>← Voltar para login</Text>
+        </TouchableOpacity>
       </View>
 
       <Alert
@@ -189,9 +188,13 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 4,
   },
-  backButton: {
-    backgroundColor: '#1E1E45',
-    width: '100%',
-    marginTop: 4,
+  backLink: {
+    alignItems: 'center',
+    paddingVertical: 4,
+  },
+  backLinkText: {
+    color: '#9090B0',
+    fontSize: 13,
+    letterSpacing: 0.5,
   },
 });
