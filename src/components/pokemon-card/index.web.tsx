@@ -82,8 +82,8 @@ Animated.timing(floatAnim, {
     <Animated.View
         style={{
             position: 'absolute',
-            width: 70,
-            height: 70,
+            width: 90,
+            height: 90,
             borderRadius: 60,
             backgroundColor: colors.accent,
             opacity: 0.15,
